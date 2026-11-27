@@ -4,15 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"path"
-	"time"
 
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/courselessonversion"
-	"hexletbasics/ent/enrollment"
-	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
 )
 
@@ -38,7 +34,6 @@ type Check struct {
 	LessonID  int
 	VersionID int
 	Code      string
-	Locale    string
 }
 
 // CheckResult is what the check produced and what it changed.
@@ -93,25 +88,9 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 		Guest:          nil,
 	}
 
-	err = p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
-		occurredAt := p.now()
-
-		// Published for everyone, guests included: pre-signup activity is exactly
-		// what this fact exists to keep visible.
-		err := p.publisher.Publish(ctx, tx, events.SolutionChecked{
-			LessonSlug: lo.FromPtr(open.lesson.Slug),
-			CourseSlug: lo.FromPtr(open.course.Slug),
-			Locale:     check.Locale,
-			Passed:     outcome.Passed,
-			OccurredAt: occurredAt,
-		})
-		if err != nil {
-			return errs.Wrapf(err, "publish solution checked")
-		}
-
+	err = p.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		if !check.Learner.SignedIn() {
-			// A guest leaves no rows and produces no enrollment facts: those count
-			// transitions on an account, and there is no account. Their whole state
+			// A guest leaves no rows: there is no account. Their whole state
 			// is the set of Lessons they finished, so a pass that adds nothing —
 			// re-submitting one they already passed — changes nothing and writes
 			// no cookie.
@@ -123,7 +102,7 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 			return nil
 		}
 
-		return p.record(ctx, tx, db, check, open, outcome, result, occurredAt)
+		return p.record(ctx, db, check, open, outcome, result)
 	})
 	if err != nil {
 		return nil, err
@@ -194,45 +173,27 @@ func (p *Progress) submissionFor(
 	}, nil
 }
 
-// record writes what a signed-in learner's check changed, and publishes the
-// fact for each transition it made.
+// record writes what a signed-in learner's check changed.
 func (p *Progress) record(
 	ctx context.Context,
-	tx *sql.Tx,
 	db *ent.Client,
 	check Check,
 	open *resolvedLesson,
 	outcome Outcome,
 	result *CheckResult,
-	occurredAt time.Time,
 ) error {
 	userID := check.Learner.UserID
 
-	enrolled, createdEnrollment, err := p.enroll(ctx, db, userID, open.course.ID)
+	enrolled, err := p.enroll(ctx, db, userID, open.course.ID)
 	if err != nil {
 		return err
 	}
 
-	if createdEnrollment {
-		err := p.publishCourseStarted(ctx, tx, db, userID, open.course, check.Locale, occurredAt)
-		if err != nil {
-			return err
-		}
-	}
-
-	taken, createdProgress, err := takeLesson(ctx, db, userID, open.course.ID, enrolled.ID, check.LessonID)
+	// A learner who reached this Lesson without pressing start (a deep link, or
+	// a page restored from history) gets it started here.
+	taken, err := takeLesson(ctx, db, userID, open.course.ID, enrolled.ID, check.LessonID)
 	if err != nil {
 		return err
-	}
-
-	if createdProgress {
-		// The learner reached this Lesson without pressing start — a deep link,
-		// or a page restored from history. Submitting is as deliberate an act as
-		// starting, so it produces the same fact.
-		err := p.publishLessonStarted(ctx, tx, db, enrolled.ID, open, check.Locale, occurredAt)
-		if err != nil {
-			return err
-		}
 	}
 
 	if !outcome.Passed {
@@ -241,9 +202,8 @@ func (p *Progress) record(
 		return nil
 	}
 
-	// Re-submitting to a Lesson already passed transitions nothing and
-	// publishes nothing — experimenting must stay safe, and the occurrence
-	// counts the CRM consumes count transitions, not submissions.
+	// Re-submitting to a Lesson already passed transitions nothing:
+	// experimenting must stay safe.
 	if lo.FromPtr(taken.State) != StateFinished {
 		_, err := taken.Update().SetState(StateFinished).Save(ctx)
 		if err != nil {
@@ -251,22 +211,6 @@ func (p *Progress) record(
 		}
 
 		result.LessonFinished = true
-
-		count, err := lessonProgressCount(ctx, db, enrolled.ID)
-		if err != nil {
-			return err
-		}
-
-		err = p.publisher.Publish(ctx, tx, events.LessonFinished{
-			OccurrenceCount: count,
-			LessonSlug:      lo.FromPtr(open.lesson.Slug),
-			CourseSlug:      lo.FromPtr(open.course.Slug),
-			Locale:          check.Locale,
-			OccurredAt:      occurredAt,
-		})
-		if err != nil {
-			return errs.Wrapf(err, "publish lesson finished")
-		}
 	}
 
 	// Completion is evaluated on every passing check, not only on one that
@@ -274,7 +218,7 @@ func (p *Progress) record(
 	// Lessons are all finished while their Enrollment is not — inherited data,
 	// or a Version that shrank the Lesson set — closes their Course by passing
 	// anything, instead of having no submission left that would notice.
-	return p.finishCourse(ctx, tx, db, check, open, enrolled, result, occurredAt)
+	return finishCourse(ctx, db, check.Learner.UserID, open, enrolled, result)
 }
 
 // finishCourse moves the Enrollment to finished when this check left no
@@ -284,15 +228,13 @@ func (p *Progress) record(
 // to the learner's position: a gap — inherited from the old system, which
 // allowed any order, or left by a Version that inserted a Lesson behind them —
 // keeps the Course open until the learner closes it.
-func (p *Progress) finishCourse(
+func finishCourse(
 	ctx context.Context,
-	tx *sql.Tx,
 	db *ent.Client,
-	check Check,
+	userID int,
 	open *resolvedLesson,
 	enrolled *ent.Enrollment,
 	result *CheckResult,
-	occurredAt time.Time,
 ) error {
 	// Anything other than finished counts as in progress, NULL included: the
 	// baseline allows it and rows predating AASM have it, and such a learner must
@@ -307,7 +249,7 @@ func (p *Progress) finishCourse(
 		return nil
 	}
 
-	finished, err := finishedLessonIDs(ctx, db, check.Learner.UserID, open.course.ID)
+	finished, err := finishedLessonIDs(ctx, db, userID, open.course.ID)
 	if err != nil {
 		return err
 	}
@@ -323,40 +265,5 @@ func (p *Progress) finishCourse(
 
 	result.CourseFinished = true
 
-	// Counted after the transition so the Course just finished is included —
-	// the legacy publisher counted the transition itself.
-	count, err := db.Enrollment.Query().
-		Where(
-			enrollment.UserID(check.Learner.UserID),
-			enrollment.StateEQ(StateFinished),
-		).
-		Count(ctx)
-	if err != nil {
-		return errs.Wrapf(err, "count finished enrollments")
-	}
-
-	err = p.publisher.Publish(ctx, tx, events.CourseFinished{
-		OccurrenceCount: count,
-		Slug:            lo.FromPtr(open.course.Slug),
-		Locale:          check.Locale,
-		OccurredAt:      occurredAt,
-	})
-	if err != nil {
-		return errs.Wrapf(err, "publish course finished")
-	}
-
 	return nil
-}
-
-// lessonProgressCount is the number of Lesson Progress rows on an Enrollment,
-// which is the occurrence count the lesson facts carry.
-func lessonProgressCount(ctx context.Context, db *ent.Client, enrollmentID int) (int, error) {
-	count, err := db.LessonProgress.Query().
-		Where(lessonprogress.EnrollmentID(enrollmentID)).
-		Count(ctx)
-	if err != nil {
-		return 0, errs.Wrapf(err, "count lesson progress")
-	}
-
-	return count, nil
 }

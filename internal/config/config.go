@@ -106,7 +106,7 @@ type Worker struct {
 	// exercises repos are public, so it is optional; when set it is used as the
 	// HTTP basic-auth password (x-access-token).
 	GitHubToken Secret `env:"GITHUB_TOKEN"`
-	// amoCRM receives lead_created events through a Watermill -> River handler.
+	// amoCRM receives lead_created events through their River job (ADR-0031).
 	AmoCRMBaseURL   string `env:"AMOCRM_BASE_URL"`
 	AmoCRMAuthToken Secret `env:"AMOCRM_AUTH_TOKEN"`
 	YMCounter       string `env:"YM_COUNTER"`

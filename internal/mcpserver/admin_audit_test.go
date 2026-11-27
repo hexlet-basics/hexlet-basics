@@ -13,8 +13,8 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/auditrecord"
 	"hexletbasics/internal/audit"
-	"hexletbasics/internal/eventhandler"
 	"hexletbasics/internal/fixture"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/oauthserver"
 	"hexletbasics/internal/testsupport"
@@ -219,9 +219,9 @@ func TestReadingTheTrailOverMCPIsRecordedAsAReadOfPersonalData(t *testing.T) {
 	page := structured(t, call(t, session, "adminListAuditRecords", map[string]any{"locale": "ru"}))
 	require.Contains(t, itemIDs(t, page), seeded)
 
-	// Recorded after the request, by the consumer of the event.
+	// Recorded after the request, by the job the event queued.
 	assert.Empty(t, o.Records("AdminListAuditRecords"))
-	testsupport.Deliver(t, o.Services, eventhandler.StaffReadPersonalData(o.DB))
+	testsupport.WorkEnqueued(t, o.Services, jobs.RecordPersonalDataReadWorker(o.DB))
 
 	records := o.Records("AdminListAuditRecords")
 	require.Len(t, records, 1)

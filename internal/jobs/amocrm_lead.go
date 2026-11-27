@@ -26,14 +26,24 @@ func (AmoCRMLeadArgs) Kind() string { return "amocrm_lead" }
 // to ride out an amoCRM outage; River's default of 25 retries for weeks.
 const amoCRMLeadMaxAttempts = 8
 
-// InsertOpts deduplicates a redelivered event by its args and bounds retries.
-// Uniqueness lives here, not at the Watermill call site, so every insert of the
-// kind gets it.
+// InsertOpts deduplicates a lead queued twice by its args and bounds retries.
+// Uniqueness lives here, not at a call site, so every insert of the kind gets
+// it.
 func (AmoCRMLeadArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
 		MaxAttempts: amoCRMLeadMaxAttempts,
 		UniqueOpts:  river.UniqueOpts{ByArgs: true},
 	}
+}
+
+// amoCRMLead is the events.Consumer that queues this job.
+func amoCRMLead(event events.Event) (river.JobArgs, bool) {
+	lead, ok := event.(events.LeadCreated)
+	if !ok {
+		return nil, false
+	}
+
+	return AmoCRMLeadArgs{Event: lead}, true
 }
 
 // AmoCRMLead syncs created leads to amoCRM through syncer.

@@ -15,7 +15,6 @@ import (
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/auth"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
@@ -42,8 +41,8 @@ func TestSignUpCreditsTheLessonsTheGuestFinished(t *testing.T) {
 	assert.ElementsMatch(t, []string{firstLessonSlug, secondLessonSlug}, finished,
 		"every lesson the cookie names is credited")
 
-	assert.Len(t, publishedOf[events.CourseStarted](t, h), 1, "the enrollment is new")
-	assert.Len(t, publishedOf[events.LessonFinished](t, h), 2, "one per credited lesson")
+	assert.Equal(t, 1, h.DB.Enrollment.Query().Where(enrollment.UserID(int(created.Response.ID))).CountX(ctx),
+		"the enrollment is new")
 	assert.True(t, clearsGuestCookie(h.ResponseCookies()), "the cookie is consumed")
 }
 
@@ -62,8 +61,6 @@ func TestSignInAddsTheGuestsLessonsToTheAccount(t *testing.T) {
 	assert.ElementsMatch(t, []string{firstLessonSlug, thirdLessonSlug}, finished,
 		"the account had only the first; the browser's third is added, the second is not implied")
 
-	assert.Empty(t, publishedOf[events.CourseStarted](t, h), "the learner was already enrolled")
-	assert.Len(t, publishedOf[events.LessonFinished](t, h), 1, "only what the merge actually created")
 	assert.True(t, clearsGuestCookie(h.ResponseCookies()))
 }
 
@@ -78,8 +75,6 @@ func TestSignInLeavesAnAccountAheadOfTheCookieAlone(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx), "nothing is written")
-	assert.Empty(t, publishedOf[events.LessonFinished](t, h), "and no progress fact is published")
-	assert.Empty(t, publishedOf[events.CourseStarted](t, h))
 }
 
 // A cookie naming a lesson the current version no longer contains resolves to

@@ -7,8 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/audit"
-	"hexletbasics/internal/eventhandler"
-	"hexletbasics/internal/events"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/mcpserver"
 	"hexletbasics/internal/testsupport"
 )
@@ -26,12 +25,13 @@ func TestDispatchedCallsPassBothMiddlewares(t *testing.T) {
 	read := call(t, session, "adminListUsers", map[string]any{"locale": "en", "perPage": 2})
 	require.False(t, read.IsError, "%+v", read.Content)
 
-	facts := testsupport.PublishedEvents[events.StaffReadPersonalData](t, o.Services)
-	require.Len(t, facts, 1)
-	assert.Equal(t, "mcp", facts[0].Channel)
-	assert.Equal(t, token.ConnectedAppID, *facts[0].ConnectedAppID)
-	assert.Equal(t, token.ID, *facts[0].TokenID)
-	testsupport.Deliver(t, o.Services, eventhandler.StaffReadPersonalData(o.DB))
+	queued := testsupport.EnqueuedJobs[jobs.RecordPersonalDataReadArgs](t, o.Services)
+	require.Len(t, queued, 1)
+	fact := queued[0].Event
+	assert.Equal(t, "mcp", fact.Channel)
+	assert.Equal(t, token.ConnectedAppID, *fact.ConnectedAppID)
+	assert.Equal(t, token.ID, *fact.TokenID)
+	testsupport.WorkEnqueued(t, o.Services, jobs.RecordPersonalDataReadWorker(o.DB))
 	records := o.Records("AdminListUsers")
 	require.Len(t, records, 1)
 	assert.Equal(t, "mcp", records[0].Channel)

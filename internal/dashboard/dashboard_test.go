@@ -25,7 +25,7 @@ func TestCoursesLogsTheCourseWithoutACard(t *testing.T) {
 	var logs bytes.Buffer
 
 	logger := slog.New(slog.NewTextHandler(&logs, &slog.HandlerOptions{Level: slog.LevelWarn}))
-	board := dashboard.New(db, landingpage.NewCatalog(db), progress.New(db, transactor, nil, nil), logger)
+	board := dashboard.New(db, landingpage.NewCatalog(db), progress.New(db, transactor, nil), logger)
 	userID := fixture.ID(fixture.UserLearnerHiddenCards)
 	cardless := fixture.ID(fixture.CourseSingleLesson)
 

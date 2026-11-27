@@ -15,7 +15,6 @@ import (
 	"gocloud.dev/blob"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/health"
 )
 
@@ -40,7 +39,6 @@ type WorkerDependencies struct {
 	SentryClient     *sentry.Client         `do:""`
 	Database         *ent.Client            `do:""`
 	RiverClient      *river.Client[*sql.Tx] `do:""`
-	EventRuntime     *events.Runtime        `do:""`
 	Bucket           *blob.Bucket           `do:""`
 	OpenTelemetrySDK *otelconf.SDK          `do:""`
 	Probes           *health.Probes         `do:""`
@@ -56,7 +54,7 @@ func (d ServerDependencies) Shutdown(ctx context.Context) error {
 }
 
 // Shutdown releases every resource the process built, through the injector
-// (ADR-0023). Call it once, after Watermill and River have stopped.
+// (ADR-0023). Call it once, after River has stopped.
 func (d WorkerDependencies) Shutdown(ctx context.Context) error {
 	return shutdown(ctx, d.injector)
 }
@@ -86,7 +84,7 @@ func BuildServer() (ServerDependencies, error) {
 }
 
 // BuildWorker resolves the complete asynchronous application graph. It owns
-// the Watermill subscribers and River workers but exposes no HTTP server.
+// the River workers but exposes no HTTP server.
 // When the build fails, what was already built is released before the error
 // returns.
 func BuildWorker() (WorkerDependencies, error) {

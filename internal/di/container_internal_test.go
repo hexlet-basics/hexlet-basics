@@ -42,8 +42,7 @@ func configureTestEnvironment(t *testing.T) {
 }
 
 // TestServerContainerResolvesHTTPWithoutAsyncRuntime proves that the synchronous
-// graph has everything needed to serve and enqueue while exposing neither
-// Watermill consumers nor a startable River worker runtime.
+// graph has everything needed to serve, enqueue and publish facts.
 func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
 	configureTestEnvironment(t)
 
@@ -55,8 +54,9 @@ func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotNil(t, srv.Handler)
 
-	_, err = do.Invoke[*events.Runtime](injector)
-	require.Error(t, err)
+	publisher, err := do.Invoke[*events.Publisher](injector)
+	require.NoError(t, err)
+	assert.NotNil(t, publisher)
 }
 
 func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
@@ -70,11 +70,11 @@ func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotNil(t, riverClient)
 
-	eventRuntime, err := do.Invoke[*events.Runtime](injector)
-	require.NoError(t, err)
-	assert.NotNil(t, eventRuntime)
-
 	_, err = do.Invoke[*http.Server](injector)
+	require.Error(t, err)
+
+	// The worker only consumes facts, as jobs; it raises none.
+	_, err = do.Invoke[*events.Publisher](injector)
 	require.Error(t, err)
 }
 

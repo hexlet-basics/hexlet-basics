@@ -24,8 +24,6 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/emailtoken"
-	"hexletbasics/internal/eventhandler"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/health"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/lessonreview"
@@ -37,10 +35,10 @@ import (
 )
 
 // workerPackage contains the asynchronous graph: course loading, external
-// integrations, River workers, and Watermill subscribers.
+// integrations, and River workers.
 var workerPackage = do.Package(
-	// Readiness is the database (ADR-0023), and only once the job queue and the
-	// event router have started: cmd/worker calls Started and Drain.
+	// Readiness is the database (ADR-0023), and only once the job queue has
+	// started: cmd/worker calls Started and Drain.
 	do.Lazy[*health.Probes](func(i do.Injector) (*health.Probes, error) {
 		_, err := do.Invoke[*databaseCloser](i)
 		if err != nil {
@@ -124,8 +122,7 @@ var workerPackage = do.Package(
 		return courseloader.NewLoader(db, store, assets, fetcher, completion), nil
 	}),
 	// Promoting a version re-evaluates completion, so the worker graph carries
-	// the progress module too. The worker otherwise only consumes facts, and
-	// promotion is the one place it raises them, through the shared publisher.
+	// the progress module too.
 	do.Lazy[*progress.Progress](func(i do.Injector) (*progress.Progress, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
@@ -136,15 +133,10 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-
-		publisher, err := do.Invoke[*events.Publisher](i)
-		if err != nil {
-			return nil, err
-		}
 		// No exercise runner in this graph: the worker reaches the progress
 		// module only through promotion, which re-evaluates completion and never
 		// runs a submission. Wiring a real runner here would suggest otherwise.
-		return progress.New(db, txStore, publisher, progress.UnavailableRunner{}), nil
+		return progress.New(db, txStore, progress.UnavailableRunner{}), nil
 	}),
 	// Account email is delivered only here: the HTTP process enqueues intent and
 	// never talks to the mail provider.
@@ -256,6 +248,9 @@ var workerPackage = do.Package(
 			jobs.ExerciseLoader(loader),
 			jobs.ReapStuckVersionBuilds(loader, logger),
 			jobs.AmoCRMLead(amoCRMClient),
+			// Writes the Audit Record of a staff read of personal data, which the
+			// server only publishes (ADR-0020).
+			jobs.RecordPersonalDataRead(entClient),
 			jobs.AccountEmail(emailSender),
 			jobs.ReapExpiredSessions(manager, logger),
 			jobs.MaintainAuditPartitions(audit.NewPartitions(store.NewDriver(db)), cfg.AuditRetentionMonths, logger),
@@ -287,38 +282,5 @@ var workerPackage = do.Package(
 		}
 
 		return auth.New(db), nil
-	}),
-	do.Lazy[*events.Runtime](func(i do.Injector) (*events.Runtime, error) {
-		db, err := do.Invoke[*sql.DB](i)
-		if err != nil {
-			return nil, err
-		}
-
-		logger, err := do.Invoke[*slog.Logger](i)
-		if err != nil {
-			return nil, err
-		}
-
-		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
-		if err != nil {
-			return nil, err
-		}
-
-		entClient, err := do.Invoke[*ent.Client](i)
-		if err != nil {
-			return nil, err
-		}
-
-		sentryClient, err := do.Invoke[*sentry.Client](i)
-		if err != nil {
-			return nil, err
-		}
-
-		return events.NewRuntime(db, logger, sentryClient,
-			eventhandler.LeadCreated(riverClient),
-			// Writes the Audit Record of a staff read of personal data, which the
-			// server only publishes (ADR-0020).
-			eventhandler.StaffReadPersonalData(entClient),
-		)
 	}),
 )

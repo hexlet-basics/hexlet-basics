@@ -11,8 +11,8 @@ import (
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/tag"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixture"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -58,9 +58,9 @@ func TestCreateLeadNamesTheUserAsLegacyDid(t *testing.T) {
 			_, err := h.Client.CreateLead(t.Context(), leadFromTheSite())
 			require.NoError(t, err)
 
-			facts := testsupport.PublishedEvents[events.LeadCreated](t, h.Services)
-			require.Len(t, facts, 1)
-			assert.Equal(t, record.want(h), facts[0].UserName)
+			queued := testsupport.EnqueuedJobs[jobs.AmoCRMLeadArgs](t, h.Services)
+			require.Len(t, queued, 1)
+			assert.Equal(t, record.want(h), queued[0].Event.UserName)
 		})
 	}
 }

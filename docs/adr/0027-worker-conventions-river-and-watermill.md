@@ -1,8 +1,10 @@
 ---
-status: accepted
+status: accepted; Watermill paragraph superseded by ADR-0031
 ---
 
 # Worker conventions: River and Watermill
+
+> **Superseded in part by [ADR-0031](0031-a-domain-event-is-a-river-job-for-each-consumer.md):** there is no Watermill; a domain event is a River job for each consumer that reacts to it.
 
 Supersedes only the "River usage rules" paragraph of
 [ADR-0004](0004-events-via-watermill-jobs-via-river.md). The

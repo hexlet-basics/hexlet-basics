@@ -1,9 +1,8 @@
 // Package signin is where every way into an account ends: a password, a Magic
 // Link, a Password Reset and a User sign-up (GLOSSARY). Each proves who the
 // visitor is in its own way and then takes the same steps, in the same order,
-// so none of them can skip one: the sign-in is recorded (not for a sign-up,
-// which the registrar records as a UserSignedUp), the Session begins, and the
-// visitor's Guest progress becomes the account's.
+// so none of them can skip one: the Session begins, and the visitor's Guest
+// progress becomes the account's.
 //
 // The package also asks for the two emailed links, and answers the same
 // whether or not the email is registered, so neither form tells a visitor
@@ -16,7 +15,6 @@ package signin
 import (
 	"context"
 	"errors"
-	"time"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/account"
@@ -24,7 +22,6 @@ import (
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/emailtoken"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/progress"
 )
@@ -37,7 +34,6 @@ type Gate struct {
 	tokens      *emailtoken.Tokens
 	sessions    *auth.Authenticator
 	progress    *progress.Progress
-	events      events.StandalonePublisher
 	jobs        *jobs.Enqueuer
 }
 
@@ -49,7 +45,6 @@ func New(
 	tokens *emailtoken.Tokens,
 	sessions *auth.Authenticator,
 	tracker *progress.Progress,
-	publisher events.StandalonePublisher,
 	enqueuer *jobs.Enqueuer,
 ) *Gate {
 	return &Gate{
@@ -59,16 +54,14 @@ func New(
 		tokens:      tokens,
 		sessions:    sessions,
 		progress:    tracker,
-		events:      publisher,
 		jobs:        enqueuer,
 	}
 }
 
-// Visitor is who is coming in: the locale of the request, and the Guest
-// progress its cookie carried (empty when it carried none).
+// Visitor is who is coming in: the Guest progress their cookie carried (empty
+// when it carried none).
 type Visitor struct {
-	Locale string
-	Guest  progress.GuestProgress
+	Guest progress.GuestProgress
 }
 
 // Entered is an account a visitor has just come into, and whether their Guest
@@ -87,7 +80,7 @@ func (g *Gate) WithPassword(ctx context.Context, email, password string, visitor
 		return Entered{}, err
 	}
 
-	return g.signIn(ctx, u, visitor)
+	return g.enter(ctx, u, visitor)
 }
 
 // WithMagicLink signs in the account a Magic Link was issued to. The link may
@@ -99,7 +92,7 @@ func (g *Gate) WithMagicLink(ctx context.Context, token string, visitor Visitor)
 		return Entered{}, err
 	}
 
-	return g.signIn(ctx, u, visitor)
+	return g.enter(ctx, u, visitor)
 }
 
 // CheckPasswordReset says whether a Password Reset link still lives, so the
@@ -126,19 +119,16 @@ func (g *Gate) ResetPassword(ctx context.Context, token, password string, visito
 		return Entered{}, err
 	}
 
-	return g.signIn(ctx, u, visitor)
+	return g.enter(ctx, u, visitor)
 }
 
-// SignUp creates an account (User sign-up) and starts its Session. The
-// registrar records the sign-up in the same transaction as the account, so no
-// sign-in is recorded here. A taken email is an invalid "email" field; a
+// SignUp creates an account (User sign-up) and starts its Session. A taken email is an invalid "email" field; a
 // password that cannot be hashed is account.ErrPasswordProcessing.
 func (g *Gate) SignUp(ctx context.Context, email, password string, firstName *string, visitor Visitor) (Entered, error) {
 	u, err := g.registrar.Register(ctx, account.Registration{
 		Email:     email,
 		Password:  password,
 		FirstName: firstName,
-		Locale:    visitor.Locale,
 	})
 	if err != nil {
 		return Entered{}, err
@@ -160,23 +150,6 @@ func (g *Gate) RequestPasswordReset(ctx context.Context, email, locale string) e
 	return g.requestEmail(ctx, emailtoken.PasswordReset, email, locale)
 }
 
-// signIn is what every way of proving who you are ends in for an account that
-// already exists: the sign-in is recorded, then the visitor enters.
-func (g *Gate) signIn(ctx context.Context, u *ent.User, visitor Visitor) (Entered, error) {
-	err := g.events.PublishStandalone(ctx, events.UserSignedIn{
-		UserID:          u.ID,
-		OccurrenceCount: -1,
-		Email:           u.Email,
-		Locale:          visitor.Locale,
-		OccurredAt:      time.Now().UTC(),
-	})
-	if err != nil {
-		return Entered{}, err
-	}
-
-	return g.enter(ctx, u, visitor)
-}
-
 // enter is the tail every way in shares, sign-up included: the Session begins
 // and the Guest progress is credited to the account. Keeping it in one place is
 // what stops sign-in and sign-up from issuing different sessions.
@@ -195,7 +168,7 @@ func (g *Gate) enter(ctx context.Context, u *ent.User, visitor Visitor) (Entered
 		return Entered{User: u, GuestMerged: false}, nil
 	}
 
-	err = g.progress.MergeGuest(ctx, u.ID, visitor.Guest, visitor.Locale)
+	err = g.progress.MergeGuest(ctx, u.ID, visitor.Guest)
 	if err != nil {
 		return Entered{}, err
 	}

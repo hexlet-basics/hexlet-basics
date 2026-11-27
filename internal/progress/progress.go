@@ -1,5 +1,5 @@
 // Package progress owns what a learner has done in a Course: the state
-// transitions and domain facts that follow from starting and passing a Lesson,
+// transitions that follow from starting and passing a Lesson,
 // and the read model of where they stand (ADR-0012, ADR-0016).
 //
 // Lessons may be taken in any order. The rules for what counts as finished and
@@ -14,7 +14,6 @@ import (
 	"database/sql"
 	"errors"
 	"slices"
-	"time"
 
 	"github.com/samber/lo"
 	"github.com/samber/oops"
@@ -25,7 +24,6 @@ import (
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
 )
 
@@ -56,19 +54,16 @@ type LessonState struct {
 	Finished bool
 }
 
-// Progress records transitions and their domain facts in one transaction, and
-// answers the same questions for reads.
+// Progress records transitions, and answers the same questions for reads.
 type Progress struct {
-	db        *ent.Client
-	store     store.Transactor
-	publisher events.TxPublisher
-	runner    ExerciseRunner
-	now       func() time.Time
+	db     *ent.Client
+	store  store.Transactor
+	runner ExerciseRunner
 }
 
 // New builds the production tracker.
-func New(db *ent.Client, txStore store.Transactor, publisher events.TxPublisher, runner ExerciseRunner) *Progress {
-	return &Progress{db: db, store: txStore, publisher: publisher, runner: runner, now: time.Now}
+func New(db *ent.Client, txStore store.Transactor, runner ExerciseRunner) *Progress {
+	return &Progress{db: db, store: txStore, runner: runner}
 }
 
 // StartLesson enrolls the learner in the Lesson's Course if they are not
@@ -88,9 +83,8 @@ func (p *Progress) StartLesson(
 	ctx context.Context,
 	learner Learner,
 	lessonID int,
-	locale string,
 ) (*CourseState, error) {
-	courseID, err := p.startLesson(ctx, learner, lessonID, locale)
+	courseID, err := p.startLesson(ctx, learner, lessonID)
 	if err != nil {
 		return nil, store.ToDomain(err)
 	}
@@ -189,7 +183,7 @@ type resolvedLesson struct {
 
 // startLesson performs the write half and reports which Course was started, so
 // the read that follows it runs outside the transaction rather than inside.
-func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID int, locale string) (int, error) {
+func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID int) (int, error) {
 	if !learner.SignedIn() {
 		// There is no guest equivalent of a started Lesson: the state would
 		// carry no data, and the one feature anchored on Lesson Progress — the
@@ -204,7 +198,7 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 	}
 
 	courseID := 0
-	err := p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
+	err := p.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		userID := learner.UserID
 
 		open, err := p.resolveLesson(ctx, db, lessonID)
@@ -214,33 +208,17 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 
 		courseID = open.course.ID
 
-		enrolled, createdEnrollment, err := p.enroll(ctx, db, userID, open.course.ID)
+		enrolled, err := p.enroll(ctx, db, userID, open.course.ID)
 		if err != nil {
 			return err
 		}
 
-		_, createdProgress, err := takeLesson(ctx, db, userID, open.course.ID, enrolled.ID, lessonID)
-		if err != nil {
-			return err
-		}
+		// Already started, or already finished: the learner pressed the button
+		// twice, or came back to a Lesson they passed. takeLesson leaves the row
+		// as it is.
+		_, err = takeLesson(ctx, db, userID, open.course.ID, enrolled.ID, lessonID)
 
-		if !createdProgress {
-			// Already started, or already finished: the learner pressed the
-			// button twice, or came back to a Lesson they passed. Nothing
-			// changes and no fact is published — the occurrence counts the CRM
-			// consumes count transitions, not requests.
-			return nil
-		}
-
-		occurredAt := p.now()
-		if createdEnrollment {
-			err := p.publishCourseStarted(ctx, tx, db, userID, open.course, locale, occurredAt)
-			if err != nil {
-				return err
-			}
-		}
-
-		return p.publishLessonStarted(ctx, tx, db, enrolled.ID, open, locale, occurredAt)
+		return err
 	})
 
 	return courseID, err
@@ -275,46 +253,14 @@ func (p *Progress) resolveLesson(ctx context.Context, db *ent.Client, lessonID i
 	}, nil
 }
 
-// publishCourseStarted records the enrollment transition, counting the
-// learner's started Enrollments as the legacy publisher did.
-func (p *Progress) publishCourseStarted(
-	ctx context.Context,
-	tx *sql.Tx,
-	db *ent.Client,
-	userID int,
-	crs *ent.Course,
-	locale string,
-	occurredAt time.Time,
-) error {
-	count, err := db.Enrollment.Query().
-		Where(enrollment.UserID(userID), enrollment.StateEQ(StateStarted)).
-		Count(ctx)
-	if err != nil {
-		return errs.Wrapf(err, "count started enrollments")
-	}
-
-	err = p.publisher.Publish(ctx, tx, events.CourseStarted{
-		OccurrenceCount: count,
-		Slug:            lo.FromPtr(crs.Slug),
-		Locale:          locale,
-		OccurredAt:      occurredAt,
-	})
-	if err != nil {
-		return errs.Wrapf(err, "publish course started")
-	}
-
-	return nil
-}
-
 // takeLesson returns the learner's Lesson Progress for a Lesson, creating it as
-// started when absent, and reports whether this call created it — the
-// lesson-started fact is published on creation only.
+// started when absent.
 //
 // Two requests taking the same Lesson at once resolve to one row: the unique
 // (user, lesson) index decides, DO NOTHING hands the loser no row instead of a
 // constraint violation that would abort the transaction, and the loser reads
 // the winner's.
-func takeLesson(ctx context.Context, db *ent.Client, userID, courseID, enrollmentID, lessonID int) (*ent.LessonProgress, bool, error) {
+func takeLesson(ctx context.Context, db *ent.Client, userID, courseID, enrollmentID, lessonID int) (*ent.LessonProgress, error) {
 	load := func() (*ent.LessonProgress, error) {
 		return db.LessonProgress.Query().
 			Where(lessonprogress.UserID(userID), lessonprogress.LessonID(lessonID)).
@@ -324,9 +270,9 @@ func takeLesson(ctx context.Context, db *ent.Client, userID, courseID, enrollmen
 	existing, err := load()
 	switch {
 	case err == nil:
-		return existing, false, nil
+		return existing, nil
 	case !ent.IsNotFound(err):
-		return nil, false, errs.Wrapf(err, "load lesson progress")
+		return nil, errs.Wrapf(err, "load lesson progress")
 	}
 
 	id, err := db.LessonProgress.Create().
@@ -341,22 +287,22 @@ func takeLesson(ctx context.Context, db *ent.Client, userID, courseID, enrollmen
 	if errors.Is(err, sql.ErrNoRows) {
 		existing, err := load()
 		if err != nil {
-			return nil, false, errs.Wrapf(err, "load concurrent lesson progress")
+			return nil, errs.Wrapf(err, "load concurrent lesson progress")
 		}
 
-		return existing, false, nil
+		return existing, nil
 	}
 
 	if err != nil {
-		return nil, false, errs.Wrapf(err, "create lesson progress")
+		return nil, errs.Wrapf(err, "create lesson progress")
 	}
 
 	row, err := db.LessonProgress.Get(ctx, id)
 	if err != nil {
-		return nil, false, errs.Wrapf(err, "load new lesson progress")
+		return nil, errs.Wrapf(err, "load new lesson progress")
 	}
 
-	return row, true, nil
+	return row, nil
 }
 
 // loadLessonCourse resolves a Lesson and the Course it belongs to. A Lesson
@@ -482,55 +428,22 @@ func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.
 	return byCourse, nil
 }
 
-// publishLessonStarted records the Lesson transition, counting the Lesson
-// Progress rows on the Enrollment.
-func (p *Progress) publishLessonStarted(
-	ctx context.Context,
-	tx *sql.Tx,
-	db *ent.Client,
-	enrollmentID int,
-	open *resolvedLesson,
-	locale string,
-	occurredAt time.Time,
-) error {
-	count, err := lessonProgressCount(ctx, db, enrollmentID)
-	if err != nil {
-		return err
-	}
-
-	err = p.publisher.Publish(ctx, tx, events.LessonStarted{
-		OccurrenceCount: count,
-		LessonSlug:      lo.FromPtr(open.lesson.Slug),
-		CourseSlug:      lo.FromPtr(open.course.Slug),
-		Locale:          locale,
-		OccurredAt:      occurredAt,
-	})
-	if err != nil {
-		return errs.Wrapf(err, "publish lesson started")
-	}
-
-	return nil
-}
-
 // enroll returns the learner's Enrollment in the Course, creating it when
-// absent, and reports whether this call created it — the course-started fact is
-// published on creation only, so a learner returning to a Course they already
-// began does not generate a second one.
+// absent.
 //
 // Two requests enrolling the same learner at once resolve to one row, and only
-// the request whose insert landed reports it as created: the unique index
-// decides, DO NOTHING hands the loser no row, and the loser reads the winner's.
-// That keeps the course-started fact and the Course's member count to one per
-// Enrollment.
-func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID int) (*ent.Enrollment, bool, error) {
+// the request whose insert landed counts it: the unique index decides, DO
+// NOTHING hands the loser no row, and the loser reads the winner's. That keeps
+// the Course's member count to one per Enrollment.
+func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID int) (*ent.Enrollment, error) {
 	existing, err := db.Enrollment.Query().
 		Where(enrollment.UserID(userID), enrollment.CourseID(courseID)).
 		Only(ctx)
 	switch {
 	case err == nil:
-		return existing, false, nil
+		return existing, nil
 	case !ent.IsNotFound(err):
-		return nil, false, errs.Wrapf(err, "load enrollment")
+		return nil, errs.Wrapf(err, "load enrollment")
 	}
 
 	// ON CONFLICT DO NOTHING rather than a bare insert: the read above cannot
@@ -548,19 +461,19 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 			Where(enrollment.UserID(userID), enrollment.CourseID(courseID)).
 			Only(ctx)
 		if err != nil {
-			return nil, false, errs.Wrapf(err, "load concurrent enrollment")
+			return nil, errs.Wrapf(err, "load concurrent enrollment")
 		}
 
-		return existing, false, nil
+		return existing, nil
 	}
 
 	if err != nil {
-		return nil, false, errs.Wrapf(err, "enroll")
+		return nil, errs.Wrapf(err, "enroll")
 	}
 
 	row, err := db.Enrollment.Get(ctx, id)
 	if err != nil {
-		return nil, false, errs.Wrapf(err, "load new enrollment")
+		return nil, errs.Wrapf(err, "load new enrollment")
 	}
 
 	// The Course's member count stays denormalized, as the legacy counter cache
@@ -568,10 +481,10 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 	// more often than anyone enrolls, and it is never used as a progress figure.
 	err = db.Course.UpdateOneID(courseID).AddEnrollmentsCount(1).Exec(ctx)
 	if err != nil {
-		return nil, false, errs.With("course_id", courseID).Wrapf(err, "count new enrollment on course")
+		return nil, errs.With("course_id", courseID).Wrapf(err, "count new enrollment on course")
 	}
 
-	return row, true, nil
+	return row, nil
 }
 
 // guestCourseState is CourseState for a visitor, whose position lives in a

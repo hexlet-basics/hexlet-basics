@@ -10,7 +10,6 @@ import (
 
 	"hexletbasics/ent/bookrequest"
 	"hexletbasics/internal/book"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -34,10 +33,9 @@ func TestGetBookIsNotRequestedByAnotherUsersRequest(t *testing.T) {
 	assert.False(t, view.Requested)
 }
 
-func TestCreateBookRequestStoresTheRequestAndPublishesIt(t *testing.T) {
+func TestCreateBookRequestStoresTheRequest(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
-	testsupport.SpeakTo(h, "ru")
 
 	err := h.Client.CreateBookRequest(t.Context())
 	require.NoError(t, err)
@@ -46,16 +44,12 @@ func TestCreateBookRequestStoresTheRequestAndPublishesIt(t *testing.T) {
 	stored := h.DB.BookRequest.Query().Where(bookrequest.UserID(h.UserID)).OnlyX(t.Context())
 	assert.Equal(t, book.StateRequested, lo.FromPtr(stored.State))
 
-	requested := testsupport.PublishedEvents[events.BookRequested](t, h.Services)
-	require.Len(t, requested, 1)
-	assert.Equal(t, "ru", requested[0].Locale)
-
 	view, err := h.Client.GetBook(t.Context())
 	require.NoError(t, err)
 	assert.True(t, view.Requested)
 }
 
-func TestCreateBookRequestTwiceKeepsOneRequestAndOneEvent(t *testing.T) {
+func TestCreateBookRequestTwiceKeepsOneRequest(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 
@@ -66,17 +60,17 @@ func TestCreateBookRequestTwiceKeepsOneRequestAndOneEvent(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	assert.Equal(t, 1, h.DB.BookRequest.Query().Where(bookrequest.UserID(h.UserID)).CountX(t.Context()))
-	assert.Equal(t, 1, testsupport.PublishedCount(t, h.Services))
 }
 
 func TestCreateBookRequestRequiresASignedInUser(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
+	before := h.DB.BookRequest.Query().CountX(t.Context())
 
 	err := h.Client.CreateBookRequest(t.Context())
 	requireProblem(t, err, http.StatusUnauthorized)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
-	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
+	assert.Equal(t, before, h.DB.BookRequest.Query().CountX(t.Context()))
 }
 
 func TestDownloadBookRedirectsToThePDFAndMarksItDownloaded(t *testing.T) {

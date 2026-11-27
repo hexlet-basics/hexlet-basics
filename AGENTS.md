@@ -69,7 +69,7 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   deps from the injector, so the plain constructors (`store.NewClient`,
   `handlers.NewServer`, `api.NewServer`) stay injector-agnostic and are usable
   directly in tests. `di.NewServer` builds the HTTP/producer graph;
-  `di.NewWorker` builds the Watermill/River consumer graph. `cmd/server` and
+  `di.NewWorker` builds the River consumer graph. `cmd/server` and
   `cmd/worker` each own a local `errgroup` coordinator (ADR-0010); `do` only
   constructs dependencies and, after the actors stop, tears them down
   (`dependencies.Shutdown`, ADR-0023). Add a new service to the appropriate
@@ -81,7 +81,7 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - Other `internal/` packages: `config/` (env config), `logging/` (`slog`),
   `store/` (ent client, `Transactor`, ambient transaction, `ToDomain`, `Paged`),
   `domain/` (domain errors, `Page`), `health/` (`/healthz`, `/readyz`), `jobs/`
-  (River), `events/` (Watermill), `ident/`, `apiconv/`, `fixture/`,
+  (River), `events/` (domain facts as River jobs, ADR-0031), `ident/`, `apiconv/`, `fixture/`,
   `testsupport/`.
 - **Configuration** (ADR-0024): `APP_ENV` (`development` default, `production`,
   `test`) drives environment policy. `config.LoadServer()` and `LoadWorker()`
@@ -100,18 +100,19 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   correlation key. Never log passwords, tokens, cookies or emails (identity is
   `user_id`); the key-name `ReplaceAttr` is a net, not the standard.
 - **Lifecycle and health** (ADR-0023): the server drains HTTP; the worker stops
-  Watermill, then River; then the injector shuts the resources down. `/healthz`
+  River; then the injector shuts the resources down. `/healthz`
   is liveness only and checks nothing; `/readyz` checks the database alone and
   turns 503 at SIGTERM, before the drain. Both are outside the contract and
   `/api`; the worker serves them on `HEALTH_ADDR`. Chart probes are an ops
   handoff (the chart still uses `tcpSocket`).
-- **Workers** (ADR-0027): every job and subscriber is idempotent by construction
-  (a named, commented exception otherwise: `ExerciseLoader`); `MaxAttempts` is a
+- **Workers** (ADR-0027): every job is idempotent by construction (a named,
+  commented exception otherwise: `ExerciseLoader`); `MaxAttempts` is a
   named constant with a reason, never River's default; a domain error retrying
   cannot fix returns `river.JobCancel`; Sentry gets a job error only on its
   final attempt; `discarded` rows (retention `jobs.DiscardedRetention`) are the
-  dead-letter store, replayed with River's own retry; a poisoned Watermill
-  message goes to `domain_events_poison` and to Sentry.
+  dead-letter store, replayed with River's own retry. A domain event is a River
+  job per consumer, inserted in the producer's transaction; the consumers are
+  listed in `jobs.EventConsumers` (ADR-0031). There is no Watermill.
 - **Transactions, a known gap** (ADR-0027, #924): the tx adapter belongs to
   `store`, `jobs.Enqueuer` and `events.Publisher`, but business modules still
   receive a `*sql.Tx` from `WithinTx` (to pass to `EnqueueTx`/`Publish`), and no

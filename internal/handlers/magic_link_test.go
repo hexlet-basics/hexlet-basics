@@ -13,7 +13,6 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtoken"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -140,7 +139,6 @@ func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
 	assert.ElementsMatch(t, []string{firstLessonSlug, secondLessonSlug},
 		finishedLessonSlugs(t, h, u.ID, jsCourseSlug))
 	assert.True(t, clearsGuestCookie(h.ResponseCookies()))
-	assert.Len(t, publishedOf[events.UserSignedIn](t, h), 1)
 }
 
 func TestConsumeMagicLinkWorksTwiceWhileItLives(t *testing.T) {
@@ -178,7 +176,7 @@ func TestConsumeMagicLinkRefusesDeadLinks(t *testing.T) {
 			_, err := h.Client.ConsumeMagicLink(t.Context(), api.ConsumeMagicLinkParams{Token: token})
 			requireProblem(t, err, http.StatusNotFound)
 			assert.Equal(t, http.StatusNotFound, h.LastStatus())
-			assert.Empty(t, publishedOf[events.UserSignedIn](t, h), "nobody is signed in")
+			assert.False(t, startsSession(h.ResponseCookies()), "nobody is signed in")
 		})
 	}
 }

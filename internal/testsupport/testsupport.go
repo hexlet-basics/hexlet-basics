@@ -163,7 +163,7 @@ type Harness struct {
 	// DB queries the same transaction the handlers wrote through, for assertions.
 	DB *ent.Client
 	// Services are the real event publisher and job enqueuers over that
-	// transaction (PublishedEvents and EnqueuedJobs read what they left behind);
+	// transaction (RequireEnqueued and EnqueuedJobs read what they left behind);
 	// Mocks are the LLM and Docker boundaries. Both are embedded, so h.Starter,
 	// h.Runner and h.Assistant read directly.
 	*Services
@@ -254,7 +254,7 @@ func NewHarnessAs(t *testing.T, userLabel fixture.Label) *Harness {
 	// is recorded instead of written to the outbox and the submission is not
 	// really run — running it means Docker, which is the one thing this seam
 	// exists to keep out of the tests.
-	tracker := progress.New(db, transactor, services.Events, mocks.Runner)
+	tracker := progress.New(db, transactor, mocks.Runner)
 	handler := handlers.NewServer(handlerDeps(t, db, transactor, services, mocks, tracker, translator, errorHandler, manager))
 	srv, err := api.NewServer(
 		handler,
@@ -349,16 +349,15 @@ func handlerDeps(
 	manager *auth.Authenticator,
 ) handlers.Deps {
 	t.Helper()
-	// The real registrar: it hashes, writes the user and raises the sign-up fact
-	// through the transactor, so the fact lands in the outbox like in production.
-	registrar := account.NewRegistrar(transactor, services.Events)
+	// The real registrar: it hashes and writes the user through the transactor.
+	registrar := account.NewRegistrar(transactor)
 	// An in-memory bucket keeps uploads off disk and out of the network while
 	// the attachment metadata still lands in the test's transaction.
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, testConfig.PublicURL)
 	// The real lead recorder too: a lead test asserts the stored row and the
-	// published fact, and both go through the test's transaction.
+	// queued amoCRM job, and both go through the test's transaction.
 	leadRecorder := leadcapture.NewRecorder(transactor, services.Events)
 	// The real chat over the real progress module: only the model is mocked.
 	return handlers.Deps{
@@ -373,14 +372,14 @@ func handlerDeps(
 		Assets:            assets,
 		Sessions:          manager,
 		SignIn: signin.New(db, account.NewCredentials(db), registrar, EmailTokens(),
-			manager, tracker, services.Events, services.Jobs),
+			manager, tracker, services.Jobs),
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
 		Remover:       account.NewRemover(transactor),
 		UserEditor:    account.NewEditor(db),
 		UserDirectory: account.NewDirectory(db),
 		Leads:         leadRecorder,
-		Books:         book.NewRecorder(transactor, services.Events),
+		Books:         book.NewRecorder(transactor),
 		I18n:          translator,
 		Errors:        errorHandler,
 		YandexFeed:    feed.NewYandex(db, testConfig.AppHost),

@@ -2,7 +2,6 @@ package progress_test
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"testing"
 
@@ -15,7 +14,6 @@ import (
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
@@ -26,39 +24,33 @@ var (
 	errBoom = errors.New("docker is down")
 )
 
-// The progress module over the test's own transaction: the real rules, the real
-// transitions and the real event publisher, with the exercise runner the one
-// mock. Asserted is what a learner or a guest is left with — the rows, the
-// state read back, the facts published — never what was called.
+// The progress module over the test's own transaction: the real rules and the
+// real transitions, with the exercise runner the one mock. Asserted is what a
+// learner or a guest is left with — the rows and the state read back — never
+// what was called.
 
 const (
 	jsSlug       = "javascript"
 	firstLesson  = "hello-world"
 	secondLesson = "variables"
 	thirdLesson  = "strings"
-	locale       = "en"
 )
 
 type rig struct {
 	db       *ent.Client
-	tx       *sql.Tx
-	services *testsupport.Services
 	mocks    *testsupport.Mocks
 	progress *progress.Progress
 }
 
 func newRig(t *testing.T) *rig {
 	t.Helper()
-	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
-	services := testsupport.NewServices(t, tx, transactor)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	mocks := testsupport.NewMocks()
 
 	return &rig{
 		db:       db,
-		tx:       tx,
-		services: services,
 		mocks:    mocks,
-		progress: progress.New(db, transactor, services.Events, mocks.Runner),
+		progress: progress.New(db, transactor, mocks.Runner),
 	}
 }
 
@@ -132,29 +124,27 @@ func lessonSlugs(state *progress.CourseState) []string {
 	return slugs
 }
 
-func TestStartLessonEnrollsTheLearnerAndStaysSilentWhenRepeated(t *testing.T) {
+func TestStartLessonEnrollsTheLearnerOnceWhenRepeated(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 	blankUser := r.learner(t, fixture.UserBlank)
 	hello := r.lesson(t, firstLesson)
 
-	state, err := r.progress.StartLesson(ctx, blankUser, hello.ID, locale)
+	state, err := r.progress.StartLesson(ctx, blankUser, hello.ID)
 	require.NoError(t, err)
 	assert.Equal(t, progress.StateStarted, state.State)
 	require.NotNil(t, state.NextLessonSlug)
 	assert.Equal(t, firstLesson, *state.NextLessonSlug)
 
-	started := testsupport.PublishedEvents[events.CourseStarted](t, r.services)
-	require.Len(t, started, 1)
-	assert.Equal(t, jsSlug, started[0].Slug)
-	assert.Len(t, testsupport.PublishedEvents[events.LessonStarted](t, r.services), 1)
+	membersBefore := r.course(t, jsSlug).EnrollmentsCount
 
-	// Pressing start again writes nothing and publishes nothing: the counts the
-	// CRM keeps count transitions, not requests.
-	_, err = r.progress.StartLesson(ctx, blankUser, hello.ID, locale)
+	// Pressing start again writes nothing: one enrollment, one lesson, and the
+	// course's member count does not move again.
+	_, err = r.progress.StartLesson(ctx, blankUser, hello.ID)
 	require.NoError(t, err)
-	assert.Equal(t, 2, testsupport.PublishedCount(t, r.services), "one course fact and one lesson fact, once")
 	assert.Equal(t, 1, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
+	assert.Equal(t, 1, r.db.LessonProgress.Query().Where(lessonprogress.UserID(blankUser.UserID)).CountX(ctx))
+	assert.Equal(t, membersBefore, r.course(t, jsSlug).EnrollmentsCount)
 }
 
 // Any lesson may be started, in any order (ADR-0016): the third before the first
@@ -164,14 +154,13 @@ func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
 	ctx := t.Context()
 	blankUser := r.learner(t, fixture.UserBlank)
 
-	state, err := r.progress.StartLesson(ctx, blankUser, r.lesson(t, thirdLesson).ID, locale)
+	state, err := r.progress.StartLesson(ctx, blankUser, r.lesson(t, thirdLesson).ID)
 	require.NoError(t, err)
 
 	started := r.db.LessonProgress.Query().Where(lessonprogress.UserID(blankUser.UserID)).AllX(ctx)
 	require.Len(t, started, 1)
 	assert.Equal(t, r.lesson(t, thirdLesson).ID, started[0].LessonID)
 	assert.Equal(t, 0, state.Completion, "starting finishes nothing")
-	assert.Len(t, testsupport.PublishedEvents[events.LessonStarted](t, r.services), 1)
 }
 
 func TestStartLessonReadsALessonTheCurrentVersionDroppedAsNotFound(t *testing.T) {
@@ -184,7 +173,7 @@ func TestStartLessonReadsALessonTheCurrentVersionDroppedAsNotFound(t *testing.T)
 		ClearNaturalOrder().
 		ExecX(ctx)
 
-	_, err := r.progress.StartLesson(ctx, r.learner(t, fixture.UserAdminLearner), lesson.ID, locale)
+	_, err := r.progress.StartLesson(ctx, r.learner(t, fixture.UserAdminLearner), lesson.ID)
 
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }
@@ -194,7 +183,7 @@ func TestStartLessonReadsALessonWithNoCourseAsNotFound(t *testing.T) {
 	ctx := t.Context()
 	orphan := r.db.CourseLesson.GetX(ctx, fixture.ID(fixture.LessonOrphan))
 
-	_, err := r.progress.StartLesson(ctx, r.learner(t, fixture.UserAdminLearner), orphan.ID, locale)
+	_, err := r.progress.StartLesson(ctx, r.learner(t, fixture.UserAdminLearner), orphan.ID)
 
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }
@@ -202,7 +191,7 @@ func TestStartLessonReadsALessonWithNoCourseAsNotFound(t *testing.T) {
 func TestStartLessonReadsAnUnknownLessonAsNotFound(t *testing.T) {
 	r := newRig(t)
 
-	_, err := r.progress.StartLesson(t.Context(), r.learner(t, fixture.UserAdminLearner), -1, locale)
+	_, err := r.progress.StartLesson(t.Context(), r.learner(t, fixture.UserAdminLearner), -1)
 
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
 }
@@ -219,12 +208,11 @@ func TestStartLessonLetsAGuestTakeAnyLessonAndWritesNothing(t *testing.T) {
 			Entries: nil,
 		},
 	}, guestWith(firstLesson)} {
-		_, err := r.progress.StartLesson(ctx, learner, r.lesson(t, thirdLesson).ID, locale)
+		_, err := r.progress.StartLesson(ctx, learner, r.lesson(t, thirdLesson).ID)
 		require.NoError(t, err)
 	}
 
 	assert.Equal(t, before, r.db.LessonProgress.Query().CountX(ctx), "a guest leaves no rows")
-	assert.Zero(t, testsupport.PublishedCount(t, r.services), "and no facts: there is no account")
 }
 
 func TestGuestCourseStateIsDerivedFromTheLessonsTheCookieNames(t *testing.T) {
@@ -365,7 +353,7 @@ func (r *rig) check(t *testing.T, learner progress.Learner, lessonSlug string) p
 		Where(courselessonversion.LessonID(lesson.ID), courselessonversion.CourseVersionID(current)).
 		OnlyX(ctx)
 
-	return progress.Check{Learner: learner, LessonID: lesson.ID, VersionID: version.ID, Code: "x", Locale: locale}
+	return progress.Check{Learner: learner, LessonID: lesson.ID, VersionID: version.ID, Code: "x"}
 }
 
 func TestCheckPassesThroughARunnerFailureWithoutRecordingAnything(t *testing.T) {
@@ -379,7 +367,6 @@ func TestCheckPassesThroughARunnerFailureWithoutRecordingAnything(t *testing.T) 
 	_, err := r.progress.CheckSolution(ctx, r.check(t, blankUser, firstLesson))
 
 	require.ErrorIs(t, err, errBoom)
-	assert.Zero(t, testsupport.PublishedCount(t, r.services))
 	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
 }
 

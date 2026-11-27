@@ -17,9 +17,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
-	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/events"
 )
 
 // GuestCookieName carries a visitor's progress. It is httpOnly: the client
@@ -221,14 +219,14 @@ func (c *GuestCodec) mac(body []byte) []byte {
 // current Version no longer contains resolves to nothing and is skipped — a
 // bounded loss for someone without an account, and one that cannot corrupt the
 // account.
-func (p *Progress) MergeGuest(ctx context.Context, userID int, guest GuestProgress, locale string) error {
+func (p *Progress) MergeGuest(ctx context.Context, userID int, guest GuestProgress) error {
 	if len(guest.Entries) == 0 {
 		return nil
 	}
 
-	return p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
+	return p.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		for _, entry := range guest.Entries {
-			err := p.mergeCourse(ctx, tx, db, userID, entry, locale)
+			err := p.mergeCourse(ctx, db, userID, entry)
 			if err != nil {
 				return err
 			}
@@ -238,7 +236,7 @@ func (p *Progress) MergeGuest(ctx context.Context, userID int, guest GuestProgre
 	})
 }
 
-func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, userID int, entry GuestEntry, locale string) error {
+func (p *Progress) mergeCourse(ctx context.Context, db *ent.Client, userID int, entry GuestEntry) error {
 	crs, err := db.Course.Query().Where(course.SlugEQ(entry.CourseSlug)).Only(ctx)
 	switch {
 	case ent.IsNotFound(err):
@@ -257,7 +255,6 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 		return err
 	}
 
-	// In course order, which is the order the facts are published in.
 	credited := lo.Filter(lessons, func(lesson currentLesson, _ int) bool {
 		return slices.Contains(entry.Lessons, lesson.slug) && !finished[lesson.lessonID]
 	})
@@ -267,54 +264,26 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 		return nil
 	}
 
-	enrolled, createdEnrollment, err := p.enroll(ctx, db, userID, crs.ID)
+	enrolled, err := p.enroll(ctx, db, userID, crs.ID)
 	if err != nil {
 		return err
 	}
 
-	occurredAt := p.now()
-
-	if createdEnrollment {
-		count, err := db.Enrollment.Query().
-			Where(enrollment.UserID(userID), enrollment.StateEQ(StateStarted)).
-			Count(ctx)
-		if err != nil {
-			return errs.Wrapf(err, "count started enrollments")
-		}
-
-		err = p.publisher.Publish(ctx, tx, events.CourseStarted{
-			OccurrenceCount: count,
-			Slug:            entry.CourseSlug,
-			Locale:          locale,
-			OccurredAt:      occurredAt,
-		})
-		if err != nil {
-			return errs.Wrapf(err, "publish course started")
-		}
-	}
-
-	return p.creditLessons(ctx, tx, db, userID, crs, enrolled, credited, locale, occurredAt)
+	return creditLessons(ctx, db, userID, crs, enrolled, credited)
 }
 
-// creditLessons writes the completions of a guest's finished Lessons and the pair
-// of facts each one would have produced had a learner passed it.
+// creditLessons writes the completions of a guest's finished Lessons.
 //
 // The rows go in three statements however many Lessons there are: one read of what
 // the account already holds, one update finishing the started ones, and one
-// insert of the missing ones. The occurrence count each fact carries is the
-// number of Lesson Progress rows on the Enrollment as of that Lesson, so it is
-// counted once before the writes and advanced by every row this merge creates,
-// in Position order, as the per-Lesson writes used to leave it.
-func (p *Progress) creditLessons(
+// insert of the missing ones.
+func creditLessons(
 	ctx context.Context,
-	tx *sql.Tx,
 	db *ent.Client,
 	userID int,
 	crs *ent.Course,
 	enrolled *ent.Enrollment,
 	lessons []currentLesson,
-	locale string,
-	occurredAt time.Time,
 ) error {
 	if len(lessons) == 0 {
 		return nil
@@ -331,11 +300,6 @@ func (p *Progress) creditLessons(
 	}
 
 	isHeld := lo.SliceToMap(held, func(row *ent.LessonProgress) (int, bool) { return row.LessonID, true })
-
-	count, err := lessonProgressCount(ctx, db, enrolled.ID)
-	if err != nil {
-		return err
-	}
 
 	// Started but not finished: the guest's cookie says otherwise.
 	if len(held) > 0 {
@@ -362,34 +326,6 @@ func (p *Progress) creditLessons(
 		_, err := db.LessonProgress.CreateBulk(builders...).Save(ctx)
 		if err != nil {
 			return errs.Wrapf(err, "create finished lesson progress")
-		}
-	}
-
-	for _, lesson := range lessons {
-		if !isHeld[lesson.lessonID] {
-			count++
-		}
-
-		for _, event := range []events.Event{
-			events.LessonStarted{
-				OccurrenceCount: count,
-				LessonSlug:      lesson.slug,
-				CourseSlug:      lo.FromPtr(crs.Slug),
-				Locale:          locale,
-				OccurredAt:      occurredAt,
-			},
-			events.LessonFinished{
-				OccurrenceCount: count,
-				LessonSlug:      lesson.slug,
-				CourseSlug:      lo.FromPtr(crs.Slug),
-				Locale:          locale,
-				OccurredAt:      occurredAt,
-			},
-		} {
-			err := p.publisher.Publish(ctx, tx, event)
-			if err != nil {
-				return errs.Wrapf(err, "publish merge fact")
-			}
 		}
 	}
 

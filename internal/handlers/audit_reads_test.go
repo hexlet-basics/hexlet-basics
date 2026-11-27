@@ -15,28 +15,28 @@ import (
 	"hexletbasics/ent/auditrecord"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/audit"
-	"hexletbasics/internal/eventhandler"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/handlers"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/permissioncatalog"
 	"hexletbasics/internal/testsupport"
 )
 
 // Faults a test injects; each is told apart from the others by identity.
 var (
-	errBoom              = errors.New("boom")
-	errOutboxUnavailable = errors.New("outbox unavailable")
+	errBoom             = errors.New("boom")
+	errQueueUnavailable = errors.New("queue unavailable")
 )
 
 // A staff read of personal data is recorded asynchronously (ADR-0020): the
-// request publishes a fact, and the worker's consumer writes the Audit Record.
-// These tests go through the operation, then deliver the fact the way the
-// worker does, and read the record.
+// request publishes a fact, which queues the job that writes the Audit Record.
+// These tests go through the operation, then work the job the way the worker
+// does, and read the record.
 
-// processReads delivers the published facts to the consumer the worker runs.
+// processReads works the queued record jobs the way the worker does.
 func processReads(t *testing.T, h *testsupport.Harness) {
 	t.Helper()
-	testsupport.Deliver(t, h.Services, eventhandler.StaffReadPersonalData(h.DB))
+	testsupport.WorkEnqueued(t, h.Services, jobs.RecordPersonalDataReadWorker(h.DB))
 }
 
 type readsOf struct {
@@ -56,7 +56,7 @@ func TestListingUsersLeavesAReadRecordOnceTheFactIsProcessed(t *testing.T) {
 	require.Len(t, page.Items, 3)
 
 	assert.Empty(t, records(t, h, "AdminListUsers"), "the record is written by the worker, not by the request")
-	require.Len(t, testsupport.PublishedEvents[events.StaffReadPersonalData](t, h.Services), 1)
+	require.Len(t, testsupport.EnqueuedJobs[jobs.RecordPersonalDataReadArgs](t, h.Services), 1)
 
 	processReads(t, h)
 
@@ -166,7 +166,7 @@ func TestReadingContentLeavesNoRecord(t *testing.T) {
 	require.NoError(t, err)
 	processReads(t, h)
 
-	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
+	assert.Empty(t, testsupport.EnqueuedJobs[jobs.RecordPersonalDataReadArgs](t, h.Services))
 	count, err := h.DB.AuditRecord.Query().Where(auditrecord.OperationIn(
 		"AdminListCourses", "AdminListBlogPosts", "AdminListCourseLessons")).Count(t.Context())
 	require.NoError(t, err)
@@ -247,7 +247,7 @@ func TestAnErrorAnswerIsNotARead(t *testing.T) {
 	_, err = read(middleware.Request{Context: t.Context(), OperationName: "AdminGetUser"}, answers(`{"status":404,"title":"Not Found"}`))
 	require.NoError(t, err)
 
-	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
+	assert.Empty(t, testsupport.EnqueuedJobs[jobs.RecordPersonalDataReadArgs](t, h.Services))
 }
 
 // A page is far smaller than the cap, but a record that grew with the table
@@ -278,7 +278,7 @@ func TestAReadRecordKeepsAtMostTheCapOfIDs(t *testing.T) {
 type brokenPublisher struct{}
 
 func (brokenPublisher) PublishStandalone(context.Context, events.Event) error {
-	return errOutboxUnavailable
+	return errQueueUnavailable
 }
 
 func personalDataMiddleware(t *testing.T, publisher events.StandalonePublisher) middleware.Middleware {

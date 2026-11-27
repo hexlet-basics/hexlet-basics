@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"sync"
@@ -11,9 +10,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ThreeDotsLabs/watermill"
-	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -32,19 +28,29 @@ const eventually = 10 * time.Second
 // so nothing here needs a database.
 type fakeJobs struct {
 	startErr error
+	started  chan struct{}
 	stopOnce sync.Once
 	stopped  chan struct{}
 }
 
 func newJobs() *fakeJobs {
 	return &fakeJobs{
+		started:  make(chan struct{}),
 		stopped:  make(chan struct{}),
 		startErr: nil,
 		stopOnce: sync.Once{},
 	}
 }
 
-func (f *fakeJobs) Start(context.Context) error { return f.startErr }
+func (f *fakeJobs) Start(context.Context) error {
+	if f.startErr != nil {
+		return f.startErr
+	}
+
+	close(f.started)
+
+	return nil
+}
 
 func (f *fakeJobs) Stop(context.Context) error {
 	f.stopOnce.Do(func() { close(f.stopped) })
@@ -53,35 +59,6 @@ func (f *fakeJobs) Stop(context.Context) error {
 }
 
 func (f *fakeJobs) Stopped() <-chan struct{} { return f.stopped }
-
-// watermillRouter is a Watermill router as the application's event runtime: the
-// router reports readiness on a bidirectional channel, the runtime on a
-// receive-only one.
-type watermillRouter struct{ *message.Router }
-
-func (r watermillRouter) Running() <-chan struct{} { return r.Router.Running() }
-
-// newRouter is a real Watermill router with one handler over an in-memory
-// pub/sub.
-func newRouter(t *testing.T) watermillRouter {
-	t.Helper()
-
-	logger := watermill.NewSlogLogger(slog.New(slog.DiscardHandler))
-	pubsub := gochannel.NewGoChannel(gochannel.Config{}, logger)
-	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: time.Second}, logger)
-	require.NoError(t, err)
-	router.AddConsumerHandler("test_consumer", "test_topic", pubsub, func(*message.Message) error { return nil })
-	t.Cleanup(func() {
-		// Close of a router that never ran waits out its close timeout.
-		select {
-		case <-router.Running():
-			require.NoError(t, router.Close())
-		default:
-		}
-	})
-
-	return watermillRouter{router}
-}
 
 func stopped(ch <-chan struct{}) bool {
 	select {
@@ -92,12 +69,10 @@ func stopped(ch <-chan struct{}) bool {
 	}
 }
 
-func TestRuntimeStopsBothComponentsOnSignal(t *testing.T) {
+func TestRuntimeStopsTheJobQueueOnSignal(t *testing.T) {
 	jobQueue := newJobs()
-	router := newRouter(t)
 	app := application{
 		jobs:   jobQueue,
-		events: router,
 		logger: nil,
 		health: nil,
 		probes: nil,
@@ -110,9 +85,9 @@ func TestRuntimeStopsBothComponentsOnSignal(t *testing.T) {
 	go func() { errCh <- app.run(signalCtx, func() { stopSignalsCalled = true }) }()
 
 	select {
-	case <-router.Running():
+	case <-jobQueue.started:
 	case <-time.After(eventually):
-		t.Fatal("the event router did not start")
+		t.Fatal("the job queue did not start")
 	}
 
 	signal()
@@ -125,25 +100,15 @@ func TestRuntimeStopsBothComponentsOnSignal(t *testing.T) {
 	}
 
 	assert.True(t, stopped(jobQueue.Stopped()), "the job queue is stopped")
-	assert.True(t, router.IsClosed(), "the event router is closed")
 	assert.True(t, stopSignalsCalled)
 }
 
-func TestRuntimeStopsRiverWhenWatermillFails(t *testing.T) {
+// A queue that stops with no signal asking it to is a failure of the process,
+// which then exits rather than serve health for a worker that runs nothing.
+func TestRuntimeFailsWhenTheJobQueueStopsOnItsOwn(t *testing.T) {
 	jobQueue := newJobs()
-	router := newRouter(t)
-	// A router that is already running cannot be run again, so Run fails.
-	go func() { assert.NoError(t, router.Run(t.Context())) }()
-
-	select {
-	case <-router.Running():
-	case <-time.After(eventually):
-		t.Fatal("the event router did not start")
-	}
-
 	app := application{
 		jobs:   jobQueue,
-		events: router,
 		logger: nil,
 		health: nil,
 		probes: nil,
@@ -153,36 +118,36 @@ func TestRuntimeStopsRiverWhenWatermillFails(t *testing.T) {
 	go func() { errCh <- app.run(context.Background(), func() {}) }()
 
 	select {
-	case err := <-errCh:
-		require.ErrorContains(t, err, "router is already running")
+	case <-jobQueue.started:
 	case <-time.After(eventually):
-		t.Fatal("worker did not stop after the event router failed")
+		t.Fatal("the job queue did not start")
 	}
 
-	assert.True(t, stopped(jobQueue.Stopped()), "the job queue is stopped")
+	require.NoError(t, jobQueue.Stop(t.Context()))
+
+	select {
+	case err := <-errCh:
+		require.ErrorIs(t, err, errJobQueueStopped)
+	case <-time.After(eventually):
+		t.Fatal("worker did not stop after the job queue stopped")
+	}
 }
 
-func TestRuntimeDoesNotStartWatermillWhenRiverFails(t *testing.T) {
+func TestRuntimeReportsAJobQueueThatCannotStart(t *testing.T) {
 	jobQueue := newJobs()
 	jobQueue.startErr = errJobQueueCannotStart
-	router := newRouter(t)
+	probes := health.NewAwaitingStart(func(context.Context) error { return nil })
 	app := application{
 		jobs:   jobQueue,
-		events: router,
 		logger: nil,
 		health: nil,
-		probes: nil,
+		probes: probes,
 	}
 
 	err := app.run(context.Background(), func() {})
 
 	require.ErrorContains(t, err, "job queue cannot start")
-
-	select {
-	case <-router.Running():
-		t.Fatal("the event router started although the job queue failed")
-	default:
-	}
+	assert.Equal(t, http.StatusServiceUnavailable, readyz(t, probes.Wrap(http.NotFoundHandler())), "never ready")
 }
 
 // readyz is the worker's readiness as the kubelet sees it: the health handler
@@ -199,10 +164,8 @@ func readyz(t *testing.T, handler http.Handler) int {
 func TestReadyzIsUnavailableBeforeTheRuntimeStartsOKWhileItRunsAndUnavailableAfterItStops(t *testing.T) {
 	probes := health.NewAwaitingStart(func(context.Context) error { return nil })
 	handler := probes.Wrap(http.NotFoundHandler())
-	router := newRouter(t)
 	app := application{
 		jobs:   newJobs(),
-		events: router,
 		probes: probes,
 		logger: nil,
 		health: nil,
@@ -256,7 +219,6 @@ func TestHealthListenerStartsAndStopsWithTheWorker(t *testing.T) {
 	}
 	app := application{
 		jobs:   newJobs(),
-		events: newRouter(t),
 		health: listener,
 		logger: nil,
 		probes: nil,

@@ -5,13 +5,11 @@ import (
 	"context"
 	"errors"
 	"log/slog"
+	"strings"
 	"sync"
 	"testing"
 	"time"
 
-	"github.com/ThreeDotsLabs/watermill"
-	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -49,14 +47,13 @@ func (s *logSink) String() string {
 func (s *logSink) logger() *slog.Logger { return slog.New(slog.NewTextHandler(s, nil)) }
 
 func TestRuntimeAnnouncesTheStartAndTheShutdown(t *testing.T) {
-	router := newRouter(t)
+	jobQueue := newJobs()
 	logs := &logSink{
 		mu:  sync.Mutex{},
 		buf: bytes.Buffer{},
 	}
 	app := application{
-		jobs:   newJobs(),
-		events: router,
+		jobs:   jobQueue,
 		logger: logs.logger(),
 		health: nil,
 		probes: nil,
@@ -66,85 +63,13 @@ func TestRuntimeAnnouncesTheStartAndTheShutdown(t *testing.T) {
 	errCh := make(chan error, 1)
 	go func() { errCh <- app.run(signalCtx, func() {}) }()
 
-	select {
-	case <-router.Running():
-	case <-time.After(eventually):
-		t.Fatal("the event router did not start")
-	}
+	require.Eventually(t, func() bool { return strings.Contains(logs.String(), "async worker started") },
+		eventually, 10*time.Millisecond, "the start is announced once the queue is up")
 
 	signal()
 
 	require.ErrorIs(t, <-errCh, errRuntimeSignal)
-	assert.Contains(t, logs.String(), "async worker started")
 	assert.Contains(t, logs.String(), "shutting down async worker")
-}
-
-// TestRuntimeReportsAnEventRouterThatCannotDrain starts a router whose handler
-// never returns, so closing it runs into its close timeout.
-func TestRuntimeReportsAnEventRouterThatCannotDrain(t *testing.T) {
-	logger := watermill.NopLogger{}
-	pubsub := gochannel.NewGoChannel(gochannel.Config{}, logger)
-	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: 200 * time.Millisecond}, logger)
-	require.NoError(t, err)
-
-	release := make(chan struct{})
-
-	t.Cleanup(func() { close(release) })
-
-	inFlight := make(chan struct{})
-
-	var once sync.Once
-
-	router.AddConsumerHandler("stuck", "stuck_topic", pubsub, func(*message.Message) error {
-		once.Do(func() { close(inFlight) })
-		<-release
-
-		return nil
-	})
-
-	logs := &logSink{
-		mu:  sync.Mutex{},
-		buf: bytes.Buffer{},
-	}
-	app := application{
-		jobs:   newJobs(),
-		events: watermillRouter{router},
-		logger: logs.logger(),
-		health: nil,
-		probes: nil,
-	}
-	signalCtx, signal := context.WithCancel(context.Background())
-
-	errCh := make(chan error, 1)
-	go func() { errCh <- app.run(signalCtx, func() {}) }()
-
-	select {
-	case <-router.Running():
-	case <-time.After(eventually):
-		t.Fatal("the event router did not start")
-	}
-
-	require.NoError(t, pubsub.Publish("stuck_topic", message.NewMessage("m-1", nil)))
-
-	select {
-	case <-inFlight:
-	case <-time.After(eventually):
-		t.Fatal("the message did not reach the handler")
-	}
-
-	signal()
-
-	select {
-	case err := <-errCh:
-		// The signal that started the shutdown and what failed while draining
-		// are both returned; main logs them once.
-		require.ErrorIs(t, err, errRuntimeSignal)
-		require.ErrorContains(t, err, "stop domain event router")
-	case <-time.After(eventually):
-		t.Fatal("worker did not stop")
-	}
-
-	assert.NotContains(t, logs.String(), "stop domain event router", "returned, not logged")
 }
 
 // stuckJobs is a job queue that starts, then cannot be stopped.
@@ -171,7 +96,6 @@ func TestRuntimeReportsAJobQueueThatCannotStop(t *testing.T) {
 	jobs := stuckJobs{stopErr: errStop, done: make(chan struct{})}
 	app := application{
 		jobs:   jobs,
-		events: newRouter(t),
 		logger: logs.logger(),
 		health: nil,
 		probes: nil,

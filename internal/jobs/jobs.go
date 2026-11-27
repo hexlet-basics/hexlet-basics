@@ -1,6 +1,7 @@
 // Package jobs wires the river background-job queue (ADR-0004): jobs are
 // "do this" commands (exercise-version builds, AI lesson review, mail, amoCRM
-// sync), distinct from watermill domain events.
+// sync). A domain event reaches its consumers as jobs too (ADR-0031): the
+// consumers are listed in EventConsumers.
 //
 // Each job kind lives in its own file: its Args (with the insert policy —
 // queue, attempts, uniqueness), its worker, and a Module constructor that the

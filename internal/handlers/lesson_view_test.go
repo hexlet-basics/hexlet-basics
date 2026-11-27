@@ -163,8 +163,7 @@ func TestGetCourseLessonStartsNothing(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	assert.Equal(t, rows, h.DB.LessonProgress.Query().CountX(ctx))
-	assert.Zero(t, testsupport.PublishedCount(t, h.Services), "reading is not a transition")
+	assert.Equal(t, rows, h.DB.LessonProgress.Query().CountX(ctx), "reading is not a transition")
 }
 
 // The read carries the same progress the course page carries, so the player

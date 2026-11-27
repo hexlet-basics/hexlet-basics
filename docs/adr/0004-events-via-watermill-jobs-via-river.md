@@ -1,8 +1,10 @@
 ---
-status: partly superseded by ADR-0027
+status: superseded by ADR-0027 (River rules) and ADR-0031 (events)
 ---
 
 # Domain events via watermill, background jobs via river
+
+> **Superseded in part by [ADR-0031](0031-a-domain-event-is-a-river-job-for-each-consumer.md):** there is no Watermill; a domain event is a River job for each consumer that reacts to it.
 
 Async work is split across two Postgres-backed mechanisms with an explicit
 boundary:

@@ -1,8 +1,10 @@
 ---
-status: accepted
+status: accepted; amended by ADR-0031
 ---
 
 # Release resources through injector.Shutdown
+
+> **Amended by [ADR-0031](0031-a-domain-event-is-a-river-job-for-each-consumer.md):** the worker runs River alone; there is no Watermill router to start or stop.
 
 `cmd/server` and `cmd/worker` each carried a copy of `closeResources` that
 closed the bucket, the database, OpenTelemetry and Sentry by hand, in an order

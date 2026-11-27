@@ -38,8 +38,8 @@ kept rule has a reason; a rule without one would have lost to practice.
   prefers per-test factories, but a labelled row names the case it exists for and
   a typo fails the build. The known cost is a growing fixture set; every row
   carries a comment saying which case it is for.
-- **Assert on what an operation left behind** (rows, `PublishedEvents`,
-  `EnqueuedJobs`), never on calls, their count or arguments. Mocks (moq,
+- **Assert on what an operation left behind** (rows, `EnqueuedJobs`; a published
+  fact is its consumers' jobs since ADR-0031), never on calls, their count or arguments. Mocks (moq,
   generated) exist only at seams to the outside world: today the LLM and the
   Docker runner, tomorrow any new external boundary, without a rule change.
 - **`testsupport.Today` and the `WithClock` options** stay for tests that touch

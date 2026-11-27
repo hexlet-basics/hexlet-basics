@@ -13,8 +13,8 @@ import (
 	"hexletbasics/ent/tag"
 	"hexletbasics/ent/tagging"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixture"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -109,9 +109,9 @@ func TestCreateLeadStoresTheLeadAndPublishesItsAttribution(t *testing.T) {
 	assert.JSONEq(t, `[{"slug":"javascript","lessons_finished_count":1}]`, lo.FromPtr(stored.CoursesData))
 	assert.JSONEq(t, `[]`, lo.FromPtr(stored.SurveyAnswersData))
 
-	createdFacts := testsupport.PublishedEvents[events.LeadCreated](t, h.Services)
-	require.Len(t, createdFacts, 1)
-	published := createdFacts[0]
+	queued := testsupport.EnqueuedJobs[jobs.AmoCRMLeadArgs](t, h.Services)
+	require.Len(t, queued, 1, "the lead goes to amoCRM")
+	published := queued[0].Event
 	assert.Equal(t, stored.ID, published.LeadID)
 	assert.Equal(t, h.UserID, published.UserID)
 	assert.Equal(t, "Admin Learner", published.UserName)
@@ -169,9 +169,9 @@ func TestCreateLeadWritesThePhoneColumnForAPhoneContact(t *testing.T) {
 	assert.Equal(t, "+79990000003", lo.FromPtr(stored.Phone))
 	assert.Nil(t, stored.Telegram)
 
-	createdFacts := testsupport.PublishedEvents[events.LeadCreated](t, h.Services)
-	require.Len(t, createdFacts, 1)
-	published := createdFacts[0]
+	queued := testsupport.EnqueuedJobs[jobs.AmoCRMLeadArgs](t, h.Services)
+	require.Len(t, queued, 1, "the lead goes to amoCRM")
+	published := queued[0].Event
 	assert.Equal(t, "+79990000003", lo.FromPtr(published.Phone))
 	assert.Nil(t, published.UTMSource)
 	assert.Nil(t, published.LandingPage)
@@ -185,6 +185,6 @@ func TestCreateLeadRequiresASignedInUser(t *testing.T) {
 	_, err := h.Client.CreateLead(t.Context(), leadFromTheSite())
 	requireProblem(t, err, http.StatusUnauthorized)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
-	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
+	assert.Empty(t, testsupport.EnqueuedJobs[jobs.AmoCRMLeadArgs](t, h.Services))
 	assert.Equal(t, totalLeads, h.DB.Lead.Query().CountX(t.Context()))
 }

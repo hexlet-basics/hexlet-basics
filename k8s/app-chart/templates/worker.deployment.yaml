@@ -1,8 +1,8 @@
 ---
 
-# The async worker (cmd/worker): River jobs and Watermill consumers
-# (ADR-0010). It never runs a solution, so it has no Docker socket, and no HTTP
-# port to probe. River and Watermill tables come from the atlas migrations.
+# The async worker (cmd/worker): River jobs, domain events included (ADR-0010,
+# ADR-0031). It never runs a solution, so it has no Docker socket, and no HTTP
+# port to probe. River's tables come from the atlas migrations.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

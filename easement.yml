@@ -36,7 +36,6 @@ components:
         internal/store,
         internal/events,
         internal/jobs,
-        internal/eventhandler,
         internal/mailer,
         internal/amocrm,
         internal/exerciserunner,

@@ -38,7 +38,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
 	services := testsupport.NewServices(t, tx, transactor)
 	mocks := testsupport.NewMocks()
-	tracker := progress.New(db, transactor, services.Events, mocks.Runner)
+	tracker := progress.New(db, transactor, mocks.Runner)
 	sessions := auth.New(db)
 	handler := handlers.NewServer(handlers.Deps{
 		DB: db,
@@ -56,8 +56,8 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 		// tests reach it while asserting what the contract protects.
 		Progress: tracker,
 		Sessions: sessions,
-		SignIn: signin.New(db, account.NewCredentials(db), account.NewRegistrar(transactor, services.Events),
-			testsupport.EmailTokens(), sessions, tracker, services.Events, services.Jobs),
+		SignIn: signin.New(db, account.NewCredentials(db), account.NewRegistrar(transactor),
+			testsupport.EmailTokens(), sessions, tracker, services.Jobs),
 		Remover:               account.NewRemover(transactor),
 		I18n:                  translator,
 		Errors:                errorHandler,

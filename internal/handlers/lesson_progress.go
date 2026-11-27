@@ -20,7 +20,6 @@ func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) 
 		ctx,
 		currentLearner(ctx),
 		int(params.ID),
-		s.i18n.Locale(ctx),
 	)
 	switch {
 	case errors.Is(err, domain.ErrNotFound):
@@ -49,7 +48,6 @@ func (s *Server) CheckLesson(
 		LessonID:  int(params.ID),
 		VersionID: int(req.VersionId),
 		Code:      req.Code,
-		Locale:    s.i18n.Locale(ctx),
 	})
 	switch {
 	case errors.Is(err, domain.ErrNotFound):

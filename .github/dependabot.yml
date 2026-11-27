@@ -42,9 +42,6 @@ updates:
       river:
         patterns:
           - 'github.com/riverqueue/*'
-      watermill:
-        patterns:
-          - 'github.com/ThreeDotsLabs/*'
 
   - package-ecosystem: docker
     directory: /

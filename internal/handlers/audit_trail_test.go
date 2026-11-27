@@ -14,8 +14,8 @@ import (
 	"hexletbasics/ent/auditrecord"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/audit"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixture"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -334,7 +334,7 @@ func TestReadingTheTrailIsRecordedAsAReadOfPersonalData(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, page.Items, 1)
 
-	require.Len(t, testsupport.PublishedEvents[events.StaffReadPersonalData](t, h.Services), 1)
+	require.Len(t, testsupport.EnqueuedJobs[jobs.RecordPersonalDataReadArgs](t, h.Services), 1)
 	processReads(t, h)
 
 	rows := records(t, h, "AdminListAuditRecords")
@@ -354,7 +354,7 @@ func TestARefusedReadOfTheTrailIsNotRecordedAsARead(t *testing.T) {
 	require.Error(t, err)
 	processReads(t, h)
 
-	assert.Empty(t, testsupport.PublishedEvents[events.StaffReadPersonalData](t, h.Services))
+	assert.Empty(t, testsupport.EnqueuedJobs[jobs.RecordPersonalDataReadArgs](t, h.Services))
 }
 
 func capabilitiesOf(t *testing.T, h *testsupport.Harness) []string {

@@ -12,10 +12,10 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/ent/user"
 	"hexletbasics/internal/account"
 	"hexletbasics/internal/auth"
 	"hexletbasics/internal/emailtoken"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/progress"
@@ -38,14 +38,14 @@ func newRig(t *testing.T) *rig {
 	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	services := testsupport.NewServices(t, tx, transactor)
 	sessions := auth.New(db)
-	tracker := progress.New(db, transactor, services.Events, testsupport.NewMocks().Runner)
+	tracker := progress.New(db, transactor, testsupport.NewMocks().Runner)
 
 	return &rig{
 		db:       db,
 		services: services,
 		sessions: sessions,
-		gate: signin.New(db, account.NewCredentials(db), account.NewRegistrar(transactor, services.Events),
-			testsupport.EmailTokens(), sessions, tracker, services.Events, services.Jobs),
+		gate: signin.New(db, account.NewCredentials(db), account.NewRegistrar(transactor),
+			testsupport.EmailTokens(), sessions, tracker, services.Jobs),
 	}
 }
 
@@ -89,13 +89,12 @@ func TestASignInRecordsItAndCreditsTheGuestProgress(t *testing.T) {
 	link := r.magicLink(t, fixture.UserBlank)
 
 	entered, err := r.within(t, func(ctx context.Context) (signin.Entered, error) {
-		return r.gate.WithMagicLink(ctx, link, signin.Visitor{Locale: "en", Guest: guest})
+		return r.gate.WithMagicLink(ctx, link, signin.Visitor{Guest: guest})
 	})
 
 	require.NoError(t, err)
 	assert.Equal(t, userID, entered.User.ID)
 	assert.True(t, entered.GuestMerged)
-	assert.Len(t, testsupport.PublishedEvents[events.UserSignedIn](t, r.services), 1)
 
 	finished := r.db.LessonProgress.Query().
 		Where(lessonprogress.UserID(userID), lessonprogress.StateEQ(progress.StateFinished),
@@ -113,39 +112,37 @@ func TestASignInWithoutGuestProgressMergesNothing(t *testing.T) {
 	link := r.magicLink(t, fixture.UserBlank)
 
 	entered, err := r.within(t, func(ctx context.Context) (signin.Entered, error) {
-		return r.gate.WithMagicLink(ctx, link, signin.Visitor{Locale: "en", Guest: progress.GuestProgress{Entries: nil}})
+		return r.gate.WithMagicLink(ctx, link, signin.Visitor{Guest: progress.GuestProgress{Entries: nil}})
 	})
 
 	require.NoError(t, err)
 	assert.False(t, entered.GuestMerged)
 }
 
-// A sign-up is recorded by the registrar as a sign-up, not as a sign-in too.
-func TestASignUpIsNotRecordedAsASignIn(t *testing.T) {
+// A sign-up creates the account and enters it.
+func TestASignUpCreatesTheAccountAndEntersIt(t *testing.T) {
 	t.Parallel()
 	r := newRig(t)
 
 	entered, err := r.within(t, func(ctx context.Context) (signin.Entered, error) {
 		return r.gate.SignUp(ctx, "new-learner@example.com", "a long enough password", nil,
-			signin.Visitor{Locale: "ru", Guest: progress.GuestProgress{Entries: nil}})
+			signin.Visitor{Guest: progress.GuestProgress{Entries: nil}})
 	})
 
 	require.NoError(t, err)
 	assert.Equal(t, "new-learner@example.com", *entered.User.Email)
-	assert.Len(t, testsupport.PublishedEvents[events.UserSignedUp](t, r.services), 1)
-	assert.Empty(t, testsupport.PublishedEvents[events.UserSignedIn](t, r.services))
+	assert.True(t, r.db.User.Query().Where(user.ID(entered.User.ID)).ExistX(t.Context()))
 }
 
-func TestAWrongPasswordIsRefusedAndRecordsNothing(t *testing.T) {
+func TestAWrongPasswordIsRefused(t *testing.T) {
 	t.Parallel()
 	r := newRig(t)
 
 	_, err := r.within(t, func(ctx context.Context) (signin.Entered, error) {
-		return r.gate.WithPassword(ctx, "blank-user@example.com", "not the password", signin.Visitor{Locale: "en", Guest: progress.GuestProgress{Entries: nil}})
+		return r.gate.WithPassword(ctx, "blank-user@example.com", "not the password", signin.Visitor{Guest: progress.GuestProgress{Entries: nil}})
 	})
 
 	require.ErrorIs(t, err, account.ErrInvalidCredentials)
-	assert.Empty(t, testsupport.PublishedEvents[events.UserSignedIn](t, r.services))
 }
 
 // Asking for either emailed link answers the same for an unknown email, and
@@ -177,7 +174,7 @@ func TestAResetLinkWorksOnce(t *testing.T) {
 	token, err := testsupport.EmailTokens().Issue(emailtoken.PasswordReset, r.db.User.GetX(t.Context(), fixture.ID(fixture.UserBlank)))
 	require.NoError(t, err)
 
-	visitor := signin.Visitor{Locale: "en", Guest: progress.GuestProgress{Entries: nil}}
+	visitor := signin.Visitor{Guest: progress.GuestProgress{Entries: nil}}
 
 	require.NoError(t, r.gate.CheckPasswordReset(t.Context(), token))
 

@@ -24,9 +24,9 @@ func learnerID() int {
 
 func newRecorder(t *testing.T) *book.Recorder {
 	t.Helper()
-	_, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
+	_, _, transactor := testsupport.NewClientWithTxAndTransactor(t)
 
-	return book.NewRecorder(transactor, testsupport.NewServices(t, tx, transactor).Events)
+	return book.NewRecorder(transactor)
 }
 
 func TestFunnelRunsFromRequestToDownload(t *testing.T) {
@@ -40,8 +40,8 @@ func TestFunnelRunsFromRequestToDownload(t *testing.T) {
 	require.NoError(t, err)
 	assert.False(t, marked, "nothing to mark before the request")
 
-	require.NoError(t, recorder.Request(t.Context(), learnerID(), "ru"))
-	require.NoError(t, recorder.Request(t.Context(), learnerID(), "ru"), "a repeat changes nothing")
+	require.NoError(t, recorder.Request(t.Context(), learnerID()))
+	require.NoError(t, recorder.Request(t.Context(), learnerID()), "a repeat changes nothing")
 
 	requested, err = recorder.Requested(t.Context(), learnerID())
 	require.NoError(t, err)

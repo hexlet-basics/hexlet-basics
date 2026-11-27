@@ -12,7 +12,6 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtoken"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -90,7 +89,6 @@ func TestUpdatePasswordSignsInWithTheNewPassword(t *testing.T) {
 	session := res
 	assert.Equal(t, u.ID, int(session.Response.ID))
 	assert.True(t, startsSession(h.ResponseCookies()))
-	assert.Len(t, publishedOf[events.UserSignedIn](t, h), 1)
 	assert.True(t, signsInWith(t, h, "with-password@example.com", "new-password"))
 	assert.False(t, signsInWith(t, h, "with-password@example.com", fixture.Password))
 }
@@ -123,7 +121,7 @@ func TestUpdatePasswordRefusesAnExpiredLink(t *testing.T) {
 		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtoken.PasswordReset, u, issuedAgo(emailtoken.Lifetime+time.Minute))})
 	requireProblem(t, err, http.StatusNotFound)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
-	assert.Empty(t, publishedOf[events.UserSignedIn](t, h), "nobody is signed in")
+	assert.False(t, startsSession(h.ResponseCookies()), "nobody is signed in")
 	assert.True(t, signsInWith(t, h, "with-password@example.com", fixture.Password))
 }
 

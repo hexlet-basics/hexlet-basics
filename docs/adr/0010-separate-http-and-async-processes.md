@@ -1,8 +1,10 @@
 ---
-status: accepted
+status: accepted; amended by ADR-0031
 ---
 
 # Separate HTTP and asynchronous process runtimes
+
+> **Amended by [ADR-0031](0031-a-domain-event-is-a-river-job-for-each-consumer.md):** the worker runs River alone; there is no Watermill router to start or stop.
 
 HTTP, River workers and Watermill subscribers ran in one process, so background
 consumers affected HTTP availability and River concurrency grew with HTTP

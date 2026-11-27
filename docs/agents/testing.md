@@ -26,16 +26,17 @@ the 32 KiB that Codex reads). Commands to run them are in `AGENTS.md`, "Test".
   table holds (a new fixture breaks that) or a raw id; count the rows you start
   from, and assert on business facts (slug, order, label). A test that depends on
   today's date does not read the wall clock: the harness's clock is
-  `testsupport.Today` (`assistant.WithClock`, `courseloader.WithClock`,
-  `account.WithClock`) and the fixtures are written relative to it.
+  `testsupport.Today` (`assistant.WithClock`, `courseloader.WithClock`) and the
+  fixtures are written relative to it.
   The fixtures are edited by hand; `mise run db:fixtures` and the e2e database load
   them through `cmd/fixtures`, the same loader the test template database uses.
 - A test owns no connection and cleans nothing up: it gets a transaction that is
   rolled back (`testsupport.NewClient*`, `NewHarness*`), the way a Rails test does.
-  Jobs are worked in it with `rivertest.Worker` (`jobs.<Kind>Worker`), and what
-  was queued or published is read back through the same transaction
-  (`rivertest.RequireInsertedTx`, `testsupport.PublishedEvents`). Nothing runs a
-  live River client or Watermill router against the shared database.
+  Jobs are worked in it with `rivertest.Worker` (`jobs.<Kind>Worker`,
+  `testsupport.WorkEnqueued`), and what was queued is read back through the same
+  transaction (`testsupport.RequireEnqueued`, `testsupport.EnqueuedJobs`); a
+  published fact is the jobs of its consumers (ADR-0031). Nothing runs a live
+  River client against the shared database.
 - Tests use `stretchr/testify` (`require` for preconditions, `assert` for the
   checks after them; `testifylint` enforces the idioms); each handler test gets an
   explicit `sql.Tx` rolled back during cleanup, matching Rails transactional
@@ -52,7 +53,7 @@ the 32 KiB that Codex reads). Commands to run them are in `AGENTS.md`, "Test".
   tests for handlers.
   The harness runs the real event publisher and job enqueuers over the test
   transaction, so a test asserts on what an operation left behind
-  (`testsupport.PublishedEvents`, `testsupport.EnqueuedJobs`, DB rows), never on
+  (`testsupport.EnqueuedJobs`, DB rows), never on
   what was called, how often or with which arguments: no call-verification
   tests. Only the LLM and the Docker runner are mocks (`testsupport.NewMocks`,
   moq): set a mock's `…Func` for what the boundary answers, and read the prompt

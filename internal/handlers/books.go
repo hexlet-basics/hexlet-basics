@@ -46,11 +46,11 @@ func (s *Server) GetBook(ctx context.Context) (*api.BookView, error) {
 
 // CreateBookRequest records the signed-in user's request (legacy
 // `books#create_request`). A repeat succeeds and changes nothing, as legacy
-// flashed the same success for it; only a first request raises BookRequested.
+// flashed the same success for it.
 func (s *Server) CreateBookRequest(ctx context.Context) error {
 	u := MustAuthenticatedUser(ctx)
 
-	err := s.books.Request(ctx, u.ID, s.i18n.Locale(ctx))
+	err := s.books.Request(ctx, u.ID)
 	if err != nil {
 		return err
 	}

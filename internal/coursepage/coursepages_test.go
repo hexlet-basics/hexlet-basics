@@ -40,9 +40,8 @@ type rig struct {
 
 func newRig(t *testing.T) *rig {
 	t.Helper()
-	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
-	services := testsupport.NewServices(t, tx, transactor)
-	tracker := progress.New(db, transactor, services.Events, testsupport.NewMocks().Runner)
+	db, _, transactor := testsupport.NewClientWithTxAndTransactor(t)
+	tracker := progress.New(db, transactor, testsupport.NewMocks().Runner)
 
 	return &rig{db: db, pages: coursepage.New(db, landingpage.NewCatalog(db), tracker, repoBase)}
 }

@@ -18,10 +18,8 @@ import (
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/testsupport"
 )
 
 // Recording a pass.
@@ -36,7 +34,6 @@ func TestCheckByALearnerWhoseCourseIsAlreadyFinishedDoesNotFinishItTwice(t *test
 	assert.True(t, result.Outcome.Passed)
 	assert.True(t, result.LessonFinished)
 	assert.False(t, result.CourseFinished, "the enrollment was closed before")
-	assert.Empty(t, testsupport.PublishedEvents[events.CourseFinished](t, r.services))
 }
 
 // Merging a visitor's cookie into an account.
@@ -46,19 +43,13 @@ func TestMergeGuestCreditsEveryFinishedLessonToANewAccount(t *testing.T) {
 	ctx := t.Context()
 	blankUser := r.learner(t, fixture.UserBlank)
 
-	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, guestWith(firstLesson, secondLesson, thirdLesson).Guest, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, guestWith(firstLesson, secondLesson, thirdLesson).Guest))
 
 	assert.ElementsMatch(t, []string{firstLesson, secondLesson, thirdLesson}, r.finishedSlugs(t, blankUser))
 	state, err := r.progress.CourseState(ctx, blankUser, r.course(t, jsSlug).ID)
 	require.NoError(t, err)
 	assert.Equal(t, 100, state.Completion)
-
-	assert.Len(t, testsupport.PublishedEvents[events.CourseStarted](t, r.services), 1)
-	assert.Len(t, testsupport.PublishedEvents[events.LessonStarted](t, r.services), 3)
-	finished := testsupport.PublishedEvents[events.LessonFinished](t, r.services)
-	require.Len(t, finished, 3)
-	assert.Equal(t, []int{1, 2, 3}, []int{finished[0].OccurrenceCount, finished[1].OccurrenceCount, finished[2].OccurrenceCount},
-		"each fact counts the lesson rows as of that lesson")
+	assert.Equal(t, 1, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx), "the merge enrolls them")
 }
 
 // A visitor who took the third lesson first is credited that lesson and nothing
@@ -67,10 +58,9 @@ func TestMergeGuestCreditsOnlyTheLessonsTheVisitorFinished(t *testing.T) {
 	r := newRig(t)
 	blankUser := r.learner(t, fixture.UserBlank)
 
-	require.NoError(t, r.progress.MergeGuest(t.Context(), blankUser.UserID, guestWith(thirdLesson).Guest, locale))
+	require.NoError(t, r.progress.MergeGuest(t.Context(), blankUser.UserID, guestWith(thirdLesson).Guest))
 
 	assert.Equal(t, []string{thirdLesson}, r.finishedSlugs(t, blankUser))
-	assert.Len(t, testsupport.PublishedEvents[events.LessonFinished](t, r.services), 1)
 }
 
 func TestMergeGuestCreditsOnlyWhatTheAccountLacks(t *testing.T) {
@@ -78,13 +68,12 @@ func TestMergeGuestCreditsOnlyWhatTheAccountLacks(t *testing.T) {
 	ctx := t.Context()
 	adminLearner := r.learner(t, fixture.UserAdminLearner) // has finished the first lesson
 
-	require.NoError(t, r.progress.MergeGuest(ctx, adminLearner.UserID, guestWith(firstLesson, secondLesson).Guest, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, adminLearner.UserID, guestWith(firstLesson, secondLesson).Guest))
 
 	assert.ElementsMatch(t, []string{firstLesson, secondLesson}, r.finishedSlugs(t, adminLearner))
-	assert.Empty(t, testsupport.PublishedEvents[events.CourseStarted](t, r.services), "she was already enrolled")
-	started := testsupport.PublishedEvents[events.LessonStarted](t, r.services)
-	require.Len(t, started, 1)
-	assert.Equal(t, secondLesson, started[0].LessonSlug)
+	assert.Equal(t, 1, r.db.Enrollment.Query().
+		Where(enrollment.UserID(adminLearner.UserID), enrollment.HasCourseWith(course.SlugEQ(jsSlug))).
+		CountX(ctx), "she was already enrolled")
 }
 
 func TestMergeGuestFinishesALessonTheAccountOnlyStarted(t *testing.T) {
@@ -92,7 +81,7 @@ func TestMergeGuestFinishesALessonTheAccountOnlyStarted(t *testing.T) {
 	ctx := t.Context()
 	staffEditor := r.learner(t, fixture.UserStaffEditor) // second lesson started, nothing finished
 
-	require.NoError(t, r.progress.MergeGuest(ctx, staffEditor.UserID, guestWith(firstLesson, secondLesson).Guest, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, staffEditor.UserID, guestWith(firstLesson, secondLesson).Guest))
 
 	assert.ElementsMatch(t, []string{firstLesson, secondLesson}, r.finishedSlugs(t, staffEditor))
 	assert.Equal(t, 2, r.db.LessonProgress.Query().Where(lessonprogress.UserID(staffEditor.UserID)).CountX(ctx),
@@ -103,10 +92,9 @@ func TestMergeGuestNeverMovesAnAccountBackwards(t *testing.T) {
 	r := newRig(t)
 	adminLearner := r.learner(t, fixture.UserAdminLearner)
 
-	require.NoError(t, r.progress.MergeGuest(t.Context(), adminLearner.UserID, guestWith(firstLesson).Guest, locale))
+	require.NoError(t, r.progress.MergeGuest(t.Context(), adminLearner.UserID, guestWith(firstLesson).Guest))
 
 	assert.Equal(t, []string{firstLesson}, r.finishedSlugs(t, adminLearner))
-	assert.Zero(t, testsupport.PublishedCount(t, r.services))
 }
 
 func TestMergeGuestIgnoresWhatItCannotResolve(t *testing.T) {
@@ -119,14 +107,13 @@ func TestMergeGuestIgnoresWhatItCannotResolve(t *testing.T) {
 		Record("no-such-course", firstLesson).
 		Record(jsSlug, "a-lesson-the-build-dropped")
 
-	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, stale, locale))
+	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, stale))
 	require.NoError(t, r.progress.MergeGuest(ctx, blankUser.UserID, progress.GuestProgress{
 		Entries: nil,
-	}, locale))
+	}))
 
 	assert.Empty(t, r.finishedSlugs(t, blankUser))
 	assert.Zero(t, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
-	assert.Zero(t, testsupport.PublishedCount(t, r.services))
 }
 
 // Re-evaluating completion when a Version is promoted.
@@ -149,20 +136,23 @@ func TestReevaluateCompletionFinishesTheCourseOfALearnerWithNothingLeftToDo(t *t
 	// the promotion has anything to close for.
 	allDone := r.learner(t, fixture.UserLearnerAllLessonsDone)
 	courseID := r.course(t, jsSlug).ID
+	finishedBefore := r.finishedEnrollments(t, courseID)
 
-	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, courseID, locale))
+	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.db, courseID))
 
 	state, err := r.progress.CourseState(ctx, allDone, courseID)
 	require.NoError(t, err)
 	assert.Equal(t, progress.StateFinished, state.State)
-	finished := testsupport.PublishedEvents[events.CourseFinished](t, r.services)
-	require.Len(t, finished, 1, "nobody else has nothing left to do")
-	assert.Equal(t, jsSlug, finished[0].Slug)
-	assert.Equal(t, 1, finished[0].OccurrenceCount)
+	assert.Equal(t, finishedBefore+1, r.finishedEnrollments(t, courseID), "nobody else has nothing left to do")
+}
 
-	// A learner already finished is not selected again, so no fact repeats.
-	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, courseID, locale))
-	assert.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, r.services), 1)
+// finishedEnrollments counts the Course's finished Enrollments.
+func (r *rig) finishedEnrollments(t *testing.T, courseID int) int {
+	t.Helper()
+
+	return r.db.Enrollment.Query().
+		Where(enrollment.CourseID(courseID), enrollment.StateEQ(progress.StateFinished)).
+		CountX(t.Context())
 }
 
 // A new version that drops the lessons a learner had left leaves them with
@@ -174,24 +164,18 @@ func TestReevaluateCompletionFinishesTheCourseOfALearnerWhoseRemainingLessonsWer
 	courseID := r.course(t, jsSlug).ID
 	r.dropLessonsAfterTheFirst(t) // adminLearner finished the only lesson that is left
 
-	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, courseID, locale))
+	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.db, courseID))
 
 	state, err := r.progress.CourseState(ctx, adminLearner, courseID)
 	require.NoError(t, err)
 	assert.Equal(t, progress.StateFinished, state.State)
-	announced := testsupport.PublishedCount(t, r.services)
-	require.NotZero(t, announced)
-
-	// A learner already finished is not selected again, so no fact repeats.
-	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, courseID, locale))
-	assert.Equal(t, announced, testsupport.PublishedCount(t, r.services))
 }
 
 func TestReevaluateCompletionLeavesLearnersWithWorkLeftAlone(t *testing.T) {
 	r := newRig(t)
 	ctx := t.Context()
 
-	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, r.course(t, jsSlug).ID, locale))
+	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.db, r.course(t, jsSlug).ID))
 
 	// Work left: the second lesson, or a lesson not even started.
 	for _, label := range []fixture.Label{fixture.UserAdminLearner, fixture.UserLearnerWithAGap, fixture.UserLearnerHiddenCards} {
@@ -205,37 +189,19 @@ func TestReevaluateCompletionCompletesNobodyForAVersionWithNoLessons(t *testing.
 	r := newRig(t)
 	ctx := t.Context()
 	bare := r.course(t, "bare")
+	finishedBefore := r.finishedEnrollments(t, bare.ID)
 
-	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.tx, r.db, bare.ID, locale))
+	require.NoError(t, r.progress.ReevaluateCompletion(ctx, r.db, bare.ID))
 
-	assert.Zero(t, testsupport.PublishedCount(t, r.services))
+	assert.Equal(t, finishedBefore, r.finishedEnrollments(t, bare.ID))
 }
 
 func TestReevaluateCompletionRefusesAnUnknownCourse(t *testing.T) {
 	r := newRig(t)
 
-	err := r.progress.ReevaluateCompletion(t.Context(), r.tx, r.db, -1, locale)
+	err := r.progress.ReevaluateCompletion(t.Context(), r.db, -1)
 
 	assert.True(t, ent.IsNotFound(err), "got %v", err)
-}
-
-// Slugs the data may lack.
-
-func TestFactsOfAContentRowWithoutASlugCarryAnEmptySlug(t *testing.T) {
-	r := newRig(t)
-	ctx := t.Context()
-	blankUser := r.learner(t, fixture.UserBlank)
-	r.db.Course.Update().Where(course.SlugEQ(jsSlug)).ClearSlug().ExecX(ctx)
-	hello := r.lesson(t, firstLesson)
-	r.db.CourseLesson.UpdateOneID(hello.ID).ClearSlug().ExecX(ctx)
-
-	_, err := r.progress.StartLesson(ctx, blankUser, hello.ID, locale)
-	require.NoError(t, err)
-
-	started := testsupport.PublishedEvents[events.LessonStarted](t, r.services)
-	require.Len(t, started, 1)
-	assert.Empty(t, started[0].CourseSlug)
-	assert.Empty(t, started[0].LessonSlug)
 }
 
 // Two requests at once resolve to one row. The race is staged by letting the
@@ -246,6 +212,7 @@ func TestStartLessonSharesAnEnrollmentWonByAConcurrentRequest(t *testing.T) {
 	ctx := t.Context()
 	blankUser := r.learner(t, fixture.UserBlank)
 	courseID := r.course(t, jsSlug).ID
+	membersBefore := r.course(t, jsSlug).EnrollmentsCount
 	raced := false
 
 	r.db.Enrollment.Use(func(next ent.Mutator) ent.Mutator {
@@ -261,12 +228,12 @@ func TestStartLessonSharesAnEnrollmentWonByAConcurrentRequest(t *testing.T) {
 		})
 	})
 
-	_, err := r.progress.StartLesson(ctx, blankUser, r.lesson(t, firstLesson).ID, locale)
+	_, err := r.progress.StartLesson(ctx, blankUser, r.lesson(t, firstLesson).ID)
 	require.NoError(t, err)
 
 	assert.Equal(t, 1, r.db.Enrollment.Query().Where(enrollment.UserID(blankUser.UserID)).CountX(ctx))
-	assert.Empty(t, testsupport.PublishedEvents[events.CourseStarted](t, r.services),
-		"only the request whose insert landed announces the enrollment")
+	assert.Equal(t, membersBefore, r.course(t, jsSlug).EnrollmentsCount,
+		"only the request whose insert landed counts the enrollment")
 }
 
 func TestStartLessonSharesLessonProgressWonByAConcurrentRequest(t *testing.T) {
@@ -292,12 +259,11 @@ func TestStartLessonSharesLessonProgressWonByAConcurrentRequest(t *testing.T) {
 		})
 	})
 
-	_, err := r.progress.StartLesson(ctx, adminLearner, second.ID, locale)
+	_, err := r.progress.StartLesson(ctx, adminLearner, second.ID)
 	require.NoError(t, err)
 
 	assert.Equal(t, 1, r.db.LessonProgress.Query().
 		Where(lessonprogress.UserID(adminLearner.UserID), lessonprogress.LessonID(second.ID)).CountX(ctx))
-	assert.Empty(t, testsupport.PublishedEvents[events.LessonStarted](t, r.services))
 }
 
 // The guest cookie.
@@ -379,7 +345,7 @@ func lessonOperations() []operation {
 				blankUser, lesson := r.learner(t, fixture.UserBlank), r.lesson(t, firstLesson)
 
 				return func() error {
-					_, err := r.progress.StartLesson(t.Context(), blankUser, lesson.ID, locale)
+					_, err := r.progress.StartLesson(t.Context(), blankUser, lesson.ID)
 
 					return err
 				}
@@ -461,7 +427,7 @@ func courseOperations() []operation {
 				staffEditor := r.learner(t, fixture.UserStaffEditor)
 
 				return func() error {
-					return r.progress.MergeGuest(t.Context(), staffEditor.UserID, guestWith(thirdLesson).Guest, locale)
+					return r.progress.MergeGuest(t.Context(), staffEditor.UserID, guestWith(thirdLesson).Guest)
 				}
 			},
 			reads:  []string{ent.TypeCourse, ent.TypeCourseLessonVersion, ent.TypeLessonProgress, ent.TypeEnrollment},
@@ -475,7 +441,7 @@ func courseOperations() []operation {
 				courseID := r.course(t, jsSlug).ID
 
 				return func() error {
-					return r.progress.ReevaluateCompletion(t.Context(), r.tx, r.db, courseID, locale)
+					return r.progress.ReevaluateCompletion(t.Context(), r.db, courseID)
 				}
 			},
 			reads:  []string{ent.TypeCourse, ent.TypeCourseLessonVersion, ent.TypeLessonProgress, ent.TypeEnrollment},
@@ -504,12 +470,26 @@ func TestAFailingWriteLeavesNoPartialTransition(t *testing.T) {
 			t.Run(op.name+"/"+entity, func(t *testing.T) {
 				r := newRig(t)
 				call := op.prepare(t, r)
-				before := testsupport.PublishedCount(t, r.services)
+				before := r.progressRows(t)
 				r.failWrites(entity)
 
 				require.ErrorIs(t, call(), errStore)
-				assert.Equal(t, before, testsupport.PublishedCount(t, r.services), "no fact outlives a failed transition")
+				assert.Equal(t, before, r.progressRows(t), "no row outlives a failed transition")
 			})
 		}
+	}
+}
+
+// progressRows is what a transition writes, counted: Enrollments and Lesson
+// Progress, all of them and the finished ones.
+func (r *rig) progressRows(t *testing.T) [4]int {
+	t.Helper()
+	ctx := t.Context()
+
+	return [4]int{
+		r.db.Enrollment.Query().CountX(ctx),
+		r.db.Enrollment.Query().Where(enrollment.StateEQ(progress.StateFinished)).CountX(ctx),
+		r.db.LessonProgress.Query().CountX(ctx),
+		r.db.LessonProgress.Query().Where(lessonprogress.StateEQ(progress.StateFinished)).CountX(ctx),
 	}
 }

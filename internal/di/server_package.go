@@ -196,11 +196,6 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 
-		publisher, err := do.Invoke[*events.Publisher](i)
-		if err != nil {
-			return nil, err
-		}
-
 		enqueuer, err := do.Invoke[*jobs.Enqueuer](i)
 		if err != nil {
 			return nil, err
@@ -208,7 +203,7 @@ var serverPackage = do.Package(
 
 		return signin.New(
 			db, account.NewCredentials(db), registrar, emailtoken.New(cfg.EmailTokenSecret.Reveal()),
-			sessions, tracker, publisher, enqueuer,
+			sessions, tracker, enqueuer,
 		), nil
 	}),
 	do.Lazy[*account.Registrar](func(i do.Injector) (*account.Registrar, error) {
@@ -217,12 +212,7 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 
-		publisher, err := do.Invoke[*events.Publisher](i)
-		if err != nil {
-			return nil, err
-		}
-
-		return account.NewRegistrar(db, publisher), nil
+		return account.NewRegistrar(db), nil
 	}),
 	do.Lazy[*leadcapture.Recorder](func(i do.Injector) (*leadcapture.Recorder, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -243,12 +233,7 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 
-		publisher, err := do.Invoke[*events.Publisher](i)
-		if err != nil {
-			return nil, err
-		}
-
-		return book.NewRecorder(db, publisher), nil
+		return book.NewRecorder(db), nil
 	}),
 	do.Lazy[*blog.Remover](func(i do.Injector) (*blog.Remover, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -474,6 +459,21 @@ var serverPackage = do.Package(
 			otelSDK.MeterProvider(),
 		)
 	}),
+	// Only this process raises domain facts. Each becomes, in the caller's
+	// transaction, the jobs of the consumers that react to it (ADR-0031).
+	do.Lazy[*events.Publisher](func(i do.Injector) (*events.Publisher, error) {
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+
+		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		if err != nil {
+			return nil, err
+		}
+
+		return events.NewPublisher(txStore, riverClient, jobs.EventConsumers()...), nil
+	}),
 	do.Lazy[*jobs.Enqueuer](func(i do.Injector) (*jobs.Enqueuer, error) {
 		db, err := do.Invoke[*store.Store](i)
 		if err != nil {
@@ -608,8 +608,8 @@ var serverPackage = do.Package(
 
 		return assistant.NewChat(db, txStore, tracker, llm, translator), nil
 	}),
-	// The progress module owns what a learner has finished. It writes and publishes
-	// through the same transaction seam every other business module uses.
+	// The progress module owns what a learner has finished. It writes through
+	// the same transaction seam every other business module uses.
 	do.Lazy[*progress.Progress](func(i do.Injector) (*progress.Progress, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
@@ -621,17 +621,12 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 
-		publisher, err := do.Invoke[*events.Publisher](i)
-		if err != nil {
-			return nil, err
-		}
-
 		runner, err := do.Invoke[*exerciserunner.Docker](i)
 		if err != nil {
 			return nil, err
 		}
 
-		return progress.New(db, txStore, publisher, runner), nil
+		return progress.New(db, txStore, runner), nil
 	}),
 	// The exercise runner is the only Docker consumer in the app (ADR-0013).
 	// The client resolves the daemon from the environment and connects lazily,

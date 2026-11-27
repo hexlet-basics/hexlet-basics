@@ -1,133 +1,28 @@
-// Package events owns domain-event contracts and their Watermill transport.
+// Package events owns the domain-event contracts and their delivery (ADR-0031).
 //
-// Domain callers publish immutable facts through the transactional publisher;
-// Watermill owns routing, consumer offsets, retries, and fan-out (ADR-0004).
+// A domain event is an immutable fact a business module raises. Publishing it
+// inserts, in the caller's transaction, one River job for each consumer that
+// reacts to it; River owns retries, the dead-letter rows and execution history.
+// An event no consumer reacts to leaves nothing behind, so a fact is added here
+// together with the consumer that needs it.
 package events
 
 import (
 	"time"
-
-	"github.com/ThreeDotsLabs/watermill/components/cqrs"
 )
 
 const (
-	// Topic is the single durable PostgreSQL stream for domain facts.
-	Topic = "domain_events"
-
-	userSignedUpName    = "user_signed_up"
-	userSignedInName    = "user_signed_in"
-	bookRequestedName   = "book_requested"
-	courseStartedName   = "course_started"
-	courseFinishedName  = "course_finished"
-	lessonStartedName   = "lesson_started"
-	lessonFinishedName  = "lesson_finished"
-	solutionCheckedName = "solution_checked"
-	emailConfirmedName  = "email_confirmed"
-	leadCreatedName     = "lead_created"
-	staffReadName       = "staff_read_personal_data"
-	schemaVersion       = "1"
+	leadCreatedName = "lead_created"
+	staffReadName   = "staff_read_personal_data"
 )
 
-// Event is closed to this package so arbitrary transport payloads cannot be
-// published as domain facts without first defining their stable contract here.
+// Event is closed to this package so arbitrary payloads cannot be published as
+// domain facts without first defining their stable contract here.
 type Event interface {
 	eventName() string
 }
 
-// UserSignedUp is the immutable account snapshot captured when public
-// registration first succeeds. Its JSON shape mirrors the legacy event while
-// adding the occurrence time needed by asynchronous consumers.
-type UserSignedUp struct {
-	UserID     int       `json:"user_id"`
-	Email      *string   `json:"email"`
-	FirstName  *string   `json:"first_name"`
-	LastName   *string   `json:"last_name"`
-	Locale     string    `json:"locale"`
-	OccurredAt time.Time `json:"occurred_at"`
-}
-
-func (UserSignedUp) eventName() string { return userSignedUpName }
-
-// UserSignedIn records a successful authentication.
-type UserSignedIn struct {
-	UserID          int       `json:"user_id"`
-	OccurrenceCount int       `json:"occurrence_count"`
-	Email           *string   `json:"email"`
-	Locale          string    `json:"locale"`
-	OccurredAt      time.Time `json:"occurred_at"`
-}
-
-func (UserSignedIn) eventName() string { return userSignedInName }
-
-// BookRequested records the first request for the downloadable book.
-type BookRequested struct {
-	Locale     string    `json:"locale"`
-	OccurredAt time.Time `json:"occurred_at"`
-}
-
-func (BookRequested) eventName() string { return bookRequestedName }
-
-// CourseStarted records the first enrollment transition for a course.
-type CourseStarted struct {
-	OccurrenceCount int       `json:"occurrence_count"`
-	Slug            string    `json:"slug"`
-	Locale          string    `json:"locale"`
-	OccurredAt      time.Time `json:"occurred_at"`
-}
-
-func (CourseStarted) eventName() string { return courseStartedName }
-
-// CourseFinished records a course completion transition.
-type CourseFinished struct {
-	OccurrenceCount int       `json:"occurrence_count"`
-	Slug            string    `json:"slug"`
-	Locale          string    `json:"locale"`
-	OccurredAt      time.Time `json:"occurred_at"`
-}
-
-func (CourseFinished) eventName() string { return courseFinishedName }
-
-// LessonStarted records the first start of a lesson within a course.
-type LessonStarted struct {
-	OccurrenceCount int       `json:"occurrence_count"`
-	LessonSlug      string    `json:"lesson_slug"`
-	CourseSlug      string    `json:"course_slug"`
-	Locale          string    `json:"locale"`
-	OccurredAt      time.Time `json:"occurred_at"`
-}
-
-func (LessonStarted) eventName() string { return lessonStartedName }
-
-// LessonFinished records a lesson completion transition.
-type LessonFinished struct {
-	OccurrenceCount int       `json:"occurrence_count"`
-	LessonSlug      string    `json:"lesson_slug"`
-	CourseSlug      string    `json:"course_slug"`
-	Locale          string    `json:"locale"`
-	OccurredAt      time.Time `json:"occurred_at"`
-}
-
-func (LessonFinished) eventName() string { return lessonFinishedName }
-
-// SolutionChecked records every exercise check, including guest checks.
-type SolutionChecked struct {
-	LessonSlug string    `json:"lesson_slug"`
-	CourseSlug string    `json:"course_slug"`
-	Locale     string    `json:"locale"`
-	Passed     bool      `json:"passed"`
-	OccurredAt time.Time `json:"occurred_at"`
-}
-
-func (SolutionChecked) eventName() string { return solutionCheckedName }
-
-// EmailConfirmed records the confirmation transition.
-type EmailConfirmed struct {
-	OccurredAt time.Time `json:"occurred_at"`
-}
-
-func (EmailConfirmed) eventName() string { return emailConfirmedName }
-
-// LeadCreated is the integration snapshot consumed by the amoCRM handler.
+// LeadCreated is the integration snapshot consumed by the amoCRM job.
 type LeadCreated struct {
 	LeadID      int     `json:"lead_id"`
 	UserID      int     `json:"user_id"`
@@ -159,13 +54,13 @@ func (LeadCreated) eventName() string { return leadCreatedName }
 
 // StaffReadPersonalData is the fact that a staff member read personal data
 // through the admin surface or over MCP (ADR-0020). The request publishes it and
-// a worker consumer writes the Audit Record, so recording never slows the read.
+// a worker job writes the Audit Record, so recording never slows the read.
 //
 // It carries identifiers and a count, never a field value: EntityIDs are the ids
 // of the rows the response held, up to a cap (the whole count is in Count), so
 // the record can say which learners were looked at without repeating what was
 // seen. The rest is who and from where, copied from the request because the
-// consumer has no request.
+// job has no request.
 type StaffReadPersonalData struct {
 	ActorUserID    *int      `json:"actor_user_id"`
 	Channel        string    `json:"channel"`
@@ -183,18 +78,3 @@ type StaffReadPersonalData struct {
 }
 
 func (StaffReadPersonalData) eventName() string { return staffReadName }
-
-// Marshaler encodes events into outbox messages and decodes them back; the
-// stable event name travels in the message metadata. The publisher writes with
-// it and tests read the outbox with it.
-func Marshaler() cqrs.JSONMarshaler {
-	return cqrs.JSONMarshaler{GenerateName: nameOf}
-}
-
-func nameOf(value any) string {
-	if event, ok := value.(Event); ok {
-		return event.eventName()
-	}
-
-	return ""
-}

@@ -55,8 +55,8 @@ type OAuth struct {
 	DB *ent.Client
 	// Server is the authorization server, for VerifyAccessToken.
 	Server *oauthserver.Server
-	// Services holds the outbox, for PublishedEvents and Deliver (a read of
-	// personal data over MCP leaves a fact there, as over HTTP).
+	// Services holds the job queue, for EnqueuedJobs and WorkEnqueued (a read of
+	// personal data over MCP queues its record job, as over HTTP).
 	Services *Services
 	// Router is the production router; mounted OAuth endpoints and the generated
 	// API (the consent operations) are both reachable through it.
@@ -147,7 +147,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 	services := NewServices(t, tx, transactor)
 	o.Services = services
 	mocks := NewMocks()
-	tracker := progress.New(db, transactor, services.Events, mocks.Runner)
+	tracker := progress.New(db, transactor, mocks.Runner)
 
 	var serverOpts []oauthserver.Option
 	if documentHost {

@@ -63,12 +63,11 @@ func anonymousCurrentUser() *api.CurrentUser {
 	return &api.CurrentUser{User: user}
 }
 
-// visitor is who the request is: its locale and the Guest progress its cookie
-// carried.
+// visitor is who the request is: the Guest progress its cookie carried.
 func (s *Server) visitor(ctx context.Context) signin.Visitor {
 	guest, _ := GuestProgress(ctx)
 
-	return signin.Visitor{Locale: s.i18n.Locale(ctx), Guest: guest}
+	return signin.Visitor{Guest: guest}
 }
 
 // entered answers a way in: the account, and the cookie that clears the Guest

@@ -2,7 +2,6 @@ package progress
 
 import (
 	"context"
-	"database/sql"
 
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/samber/lo"
@@ -11,11 +10,10 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/events"
 )
 
 // ReevaluateCompletion finishes the Enrollments a newly promoted Version has
-// completed, and publishes the fact for each.
+// completed.
 //
 // Completion is otherwise only ever evaluated when a learner submits a
 // solution, which leaves a hole: dropping a Lesson can complete a Course for
@@ -26,15 +24,9 @@ import (
 //
 // Learners who are not complete are untouched: this only ever moves an
 // Enrollment to finished, never backwards, so a Version that inserts a Lesson
-// leaves them where they are. A learner already finished is not selected, so no
-// fact is published twice.
-func (p *Progress) ReevaluateCompletion(
-	ctx context.Context,
-	tx *sql.Tx,
-	db *ent.Client,
-	courseID int,
-	locale string,
-) error {
+// leaves them where they are. It runs in the caller's transaction (db), the
+// promotion's, so the Enrollments move with the Version that completed them.
+func (p *Progress) ReevaluateCompletion(ctx context.Context, db *ent.Client, courseID int) error {
 	crs, err := db.Course.Query().Where(course.ID(courseID)).Only(ctx)
 	if err != nil {
 		return errs.With("course_id", courseID).Wrapf(err, "load course")
@@ -62,43 +54,15 @@ func (p *Progress) ReevaluateCompletion(
 		return nil
 	}
 
-	enrollmentIDs := lo.Map(completed, func(row completedEnrollment, _ int) int { return row.id })
-	userIDs := lo.Map(completed, func(row completedEnrollment, _ int) int { return row.userID })
-
 	err = db.Enrollment.Update().
-		Where(enrollment.IDIn(enrollmentIDs...)).
+		Where(enrollment.IDIn(completed...)).
 		SetState(StateFinished).
 		Exec(ctx)
 	if err != nil {
 		return errs.Wrapf(err, "finish completed enrollments")
 	}
 
-	counts, err := finishedEnrollmentCounts(ctx, db, userIDs)
-	if err != nil {
-		return err
-	}
-
-	occurredAt := p.now()
-	for _, row := range completed {
-		err := p.publisher.Publish(ctx, tx, events.CourseFinished{
-			OccurrenceCount: counts[row.userID],
-			Slug:            lo.FromPtr(crs.Slug),
-			Locale:          locale,
-			OccurredAt:      occurredAt,
-		})
-		if err != nil {
-			return errs.Wrapf(err, "publish course finished")
-		}
-	}
-
 	return nil
-}
-
-// completedEnrollment is one row of the sweep: the Enrollment to finish and the
-// learner whose occurrence count the fact carries.
-type completedEnrollment struct {
-	id     int
-	userID int
 }
 
 // completedEnrollments selects the Enrollments a promoted Version has just
@@ -117,7 +81,7 @@ type completedEnrollment struct {
 // Enrollments. Work is proportional to the finished Lesson Progress rows of the
 // new Version's Lessons — the same order as the hundreds of content rows the
 // promotion transaction is already writing.
-func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, lessonIDs []int) ([]completedEnrollment, error) {
+func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, lessonIDs []int) ([]int, error) {
 	type finishedPerLearnerRow struct {
 		UserID  int `json:"user_id"`
 		Lessons int `json:"lessons"`
@@ -146,45 +110,16 @@ func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, les
 		return nil, nil
 	}
 
-	enrollments, err := db.Enrollment.Query().
+	ids, err := db.Enrollment.Query().
 		Where(
 			enrollment.CourseID(courseID),
 			enrollment.UserIDIn(finishers...),
 			enrollment.Or(enrollment.StateIsNil(), enrollment.StateNEQ(StateFinished)),
 		).
-		All(ctx)
+		IDs(ctx)
 	if err != nil {
 		return nil, errs.Wrapf(err, "select completed enrollments")
 	}
 
-	return lo.Map(enrollments, func(e *ent.Enrollment, _ int) completedEnrollment {
-		return completedEnrollment{id: e.ID, userID: e.UserID}
-	}), nil
-}
-
-// finishedEnrollmentCounts is each learner's number of finished Enrollments,
-// read after the update so the freshly finished Course is included — the legacy
-// events counted the transition itself. One grouped query keeps the occurrence
-// counts from costing a query per transitioning learner.
-func finishedEnrollmentCounts(ctx context.Context, db *ent.Client, userIDs []int) (map[int]int, error) {
-	var rows []struct {
-		UserID int `json:"user_id"`
-		Count  int `json:"count"`
-	}
-
-	err := db.Enrollment.Query().
-		Where(enrollment.UserIDIn(userIDs...), enrollment.State(StateFinished)).
-		GroupBy(enrollment.FieldUserID).
-		Aggregate(ent.Count()).
-		Scan(ctx, &rows)
-	if err != nil {
-		return nil, errs.Wrapf(err, "count finished enrollments")
-	}
-
-	counts := make(map[int]int, len(rows))
-	for _, row := range rows {
-		counts[row.UserID] = row.Count
-	}
-
-	return counts, nil
+	return ids, nil
 }

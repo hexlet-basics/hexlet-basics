@@ -5,10 +5,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"time"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
 )
 
@@ -29,37 +27,19 @@ type Registration struct {
 	Email     string
 	Password  string
 	FirstName *string
-	Locale    string
 }
 
-// Registrar atomically creates an account and its UserSignedUp outbox record.
+// Registrar creates accounts.
 type Registrar struct {
-	store     store.Transactor
-	publisher events.TxPublisher
-	now       func() time.Time
+	store store.Transactor
 }
 
 // NewRegistrar builds the production account registrar.
-func NewRegistrar(txStore store.Transactor, publisher events.TxPublisher, opts ...RegistrarOption) *Registrar {
-	registrar := &Registrar{store: txStore, publisher: publisher, now: time.Now}
-	for _, opt := range opts {
-		opt(registrar)
-	}
-
-	return registrar
+func NewRegistrar(txStore store.Transactor) *Registrar {
+	return &Registrar{store: txStore}
 }
 
-// RegistrarOption adjusts a Registrar as it is built.
-type RegistrarOption func(*Registrar)
-
-// WithClock makes the registrar stamp the sign-up fact with now instead of the
-// wall clock, so a test can assert on the exact time the fact carries.
-func WithClock(now func() time.Time) RegistrarOption {
-	return func(r *Registrar) { r.now = now }
-}
-
-// Register creates the user and publishes the corresponding domain fact in the
-// same PostgreSQL transaction.
+// Register creates the user.
 func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User, error) {
 	hash, err := hashPassword(input.Password)
 	if err != nil {
@@ -68,7 +48,7 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User
 
 	var u *ent.User
 
-	err = r.store.WithinTx(ctx, func(tx *sql.Tx, txClient *ent.Client) error {
+	err = r.store.WithinTx(ctx, func(_ *sql.Tx, txClient *ent.Client) error {
 		u, err = txClient.User.Create().
 			SetEmail(NormalizeEmail(input.Email)).
 			SetPasswordDigest(hash).
@@ -76,18 +56,6 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (*ent.User
 			Save(ctx)
 		if err != nil {
 			return errs.Wrapf(store.ToDomain(err, userUniques()...), "create user")
-		}
-
-		err := r.publisher.Publish(ctx, tx, events.UserSignedUp{
-			UserID:     u.ID,
-			Email:      u.Email,
-			FirstName:  u.FirstName,
-			LastName:   u.LastName,
-			Locale:     input.Locale,
-			OccurredAt: r.now().UTC(),
-		})
-		if err != nil {
-			return errs.Wrapf(err, "publish user signed up")
 		}
 
 		return nil

@@ -57,10 +57,6 @@ type Loader struct {
 	now        func() time.Time
 }
 
-// defaultEventLocale matches the translator's fallback: the loader runs in the
-// worker, where there is no request to take a locale from.
-const defaultEventLocale = "en"
-
 // NewLoader wires the loader to its dependencies. The fetcher is an interface so
 // tests can supply a fixture directory instead of cloning.
 func NewLoader(
@@ -94,7 +90,7 @@ func WithClock(now func() time.Time) Option {
 // moment completion can change without a learner doing anything — the loader
 // knows when that happens and nothing about what completion means.
 type CompletionReevaluator interface {
-	ReevaluateCompletion(ctx context.Context, tx *sql.Tx, db *ent.Client, courseID int, locale string) error
+	ReevaluateCompletion(ctx context.Context, db *ent.Client, courseID int) error
 }
 
 // Run builds the given course version. It is idempotent against dead runs: a
@@ -199,8 +195,8 @@ func (l *Loader) fail(ctx context.Context, version *ent.CourseVersion, cause err
 // built-state + live-promotion. Atomicity is the point — either the new version
 // is fully present and live, or nothing changed and the old version stays live.
 func (l *Loader) build(ctx context.Context, version *ent.CourseVersion, course *ent.Course, parsed *Course) error {
-	return l.txStore.WithinTx(ctx, func(sqlTx *sql.Tx, txClient *ent.Client) error {
-		return l.buildTx(ctx, sqlTx, txClient, version.ID, course.ID, parsed)
+	return l.txStore.WithinTx(ctx, func(_ *sql.Tx, txClient *ent.Client) error {
+		return l.buildTx(ctx, txClient, version.ID, course.ID, parsed)
 	})
 }
 
@@ -293,7 +289,7 @@ func buildModule(ctx context.Context, tx *ent.Client, courseID, versionID int, m
 	return lessons, nil
 }
 
-func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, versionID, courseID int, parsed *Course) error {
+func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, courseID int, parsed *Course) error {
 	spec := parsed.Spec
 
 	_, err := tx.CourseVersion.UpdateOneID(versionID).
@@ -344,10 +340,7 @@ func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, ver
 	// evaluates completion. Re-evaluating here — inside the promotion
 	// transaction, so the new Lesson set and the completions it implies become
 	// visible together — is what replaces the legacy hourly sweep.
-	//
-	// The worker has no request locale, so the facts carry the same default the
-	// translator falls back to.
-	err = l.completion.ReevaluateCompletion(ctx, sqlTx, tx, courseID, defaultEventLocale)
+	err = l.completion.ReevaluateCompletion(ctx, tx, courseID)
 	if err != nil {
 		return oops.Wrapf(err, "re-evaluate completion after promotion")
 	}

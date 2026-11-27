@@ -3,15 +3,12 @@ package testsupport
 import (
 	"database/sql"
 	"encoding/json"
-	"log/slog"
 	"testing"
 
-	wmsql "github.com/ThreeDotsLabs/watermill-sql/v4/pkg/sql"
-	"github.com/ThreeDotsLabs/watermill/components/cqrs"
-	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverdatabasesql"
 	"github.com/riverqueue/river/rivertest"
+	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/require"
 	metricnoop "go.opentelemetry.io/otel/metric/noop"
 	tracenoop "go.opentelemetry.io/otel/trace/noop"
@@ -27,9 +24,10 @@ import (
 )
 
 // Services are the production event publisher and job enqueuers, wired over the
-// test's savepoint transactor. They write the outbox and river_job rows inside
-// the test's rollback-only transaction, so a test asserts on what an operation
-// left behind (PublishedEvents, EnqueuedJobs) rather than on what was called.
+// test's savepoint transactor. They write river_job rows inside the test's
+// rollback-only transaction, so a test asserts on what an operation left behind
+// (RequireEnqueued, EnqueuedJobs) rather than on what was called. A published
+// fact is the jobs of its consumers, so it is asserted the same way.
 type Services struct {
 	// River is the insert-only client behind the enqueuers; EnqueuedJobs lists the
 	// queue through its own JobListTx.
@@ -60,7 +58,7 @@ func NewServices(t *testing.T, tx *sql.Tx, transactor store.Transactor) *Service
 	return &Services{
 		tx:      tx,
 		River:   riverClient,
-		Events:  events.NewPublisher(transactor, slog.New(slog.DiscardHandler)),
+		Events:  events.NewPublisher(transactor, riverClient, jobs.EventConsumers()...),
 		Starter: versionbuild.NewStarter(transactor, enqueuer),
 		Jobs:    enqueuer,
 	}
@@ -121,67 +119,26 @@ func EnqueuedJobs[A river.JobArgs](t *testing.T, s *Services) []A {
 	return found
 }
 
-// PublishedEvents lists the domain facts of one type the test has written to
-// the outbox, oldest first. Watermill's own subscriber query hides rows of the
-// still-open transaction, so the topic table is read directly, but through the
-// schema's row mapping and the events' marshaler.
-func PublishedEvents[E events.Event](t *testing.T, s *Services) []E {
+// WorkEnqueued works every available job of A's kind the test has queued,
+// oldest first, through worker and in the test's transaction: what the worker
+// process does once the request is over. The harness runs no worker, so a test
+// that asserts on what a job leaves behind (an Audit Record) calls this after
+// the operation and then reads the rows. A job already worked is not available
+// any more, so a second call works only what was queued since.
+func WorkEnqueued[A river.JobArgs](t *testing.T, s *Services, worker river.Worker[A]) {
 	t.Helper()
-	var zero E
-	name := events.Marshaler().Name(zero)
-
-	var found []E
-	for _, msg := range outbox(t, s) {
-		if events.Marshaler().NameFromMessage(msg) != name {
-			continue
-		}
-		var event E
-		require.NoError(t, events.Marshaler().Unmarshal(msg, &event))
-		found = append(found, event)
-	}
-	return found
-}
-
-// PublishedCount is how many domain facts of any type the test has written.
-func PublishedCount(t *testing.T, s *Services) int {
-	t.Helper()
-	return len(outbox(t, s))
-}
-
-// outbox reads the messages of the domain-events topic table in order.
-func outbox(t *testing.T, s *Services) []*message.Message {
-	t.Helper()
-	schema := wmsql.DefaultPostgreSQLSchema{}
-	rows, err := s.tx.QueryContext(t.Context(),
-		`SELECT "offset", transaction_id, uuid, payload, metadata FROM `+
-			schema.MessagesTable(events.Topic)+` ORDER BY transaction_id, "offset"`)
+	var kind A
+	list, err := s.River.JobListTx(t.Context(), s.tx,
+		river.NewJobListParams().
+			Kinds(kind.Kind()).
+			States(rivertype.JobStateAvailable).
+			OrderBy(river.JobListOrderByID, river.SortOrderAsc))
 	require.NoError(t, err)
-	defer func() { _ = rows.Close() }()
 
-	var messages []*message.Message
-	for rows.Next() {
-		row, err := schema.UnmarshalMessage(wmsql.UnmarshalMessageParams{Row: rows})
+	runner := rivertest.NewWorker(t, riverdatabasesql.New(nil), &river.Config{}, worker)
+	for _, job := range list.Jobs {
+		result, err := runner.WorkJob(t.Context(), t, s.tx, job)
 		require.NoError(t, err)
-		messages = append(messages, row.Msg)
-	}
-	require.NoError(t, rows.Err())
-	return messages
-}
-
-// Deliver hands every fact in the outbox that handler consumes to it, oldest
-// first, the way the worker's Watermill router does after the request is over.
-// The harness runs no router, so a test that asserts on what a consumer leaves
-// behind (an Audit Record) calls this after the operation and then reads the
-// rows. Facts of other types are skipped.
-func Deliver(t *testing.T, s *Services, handler cqrs.EventHandler) {
-	t.Helper()
-	name := events.Marshaler().Name(handler.NewEvent())
-	for _, msg := range outbox(t, s) {
-		if events.Marshaler().NameFromMessage(msg) != name {
-			continue
-		}
-		event := handler.NewEvent()
-		require.NoError(t, events.Marshaler().Unmarshal(msg, event))
-		require.NoError(t, handler.Handle(t.Context(), event))
+		require.Equal(t, river.EventKindJobCompleted, result.EventKind, "the job is done")
 	}
 }

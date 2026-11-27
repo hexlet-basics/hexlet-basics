@@ -54,7 +54,7 @@ type Streamer interface {
 // learner, as the lesson page does. It is the one thing the chat needs from the
 // progress module.
 type LessonStarter interface {
-	StartLesson(ctx context.Context, learner progress.Learner, lessonID int, locale string) (*progress.CourseState, error)
+	StartLesson(ctx context.Context, learner progress.Learner, lessonID int) (*progress.CourseState, error)
 }
 
 // Chat is the in-lesson assistant: a learner's conversation per lesson, over
@@ -198,7 +198,7 @@ func (c *Chat) Ask(ctx context.Context, question Question) (io.ReadCloser, error
 		},
 	}
 
-	_, err = c.lessons.StartLesson(ctx, learner, question.LessonID, locale)
+	_, err = c.lessons.StartLesson(ctx, learner, question.LessonID)
 	if err != nil {
 		return nil, err
 	}
@@ -242,7 +242,7 @@ func (c *Chat) streamAnswer(
 		}
 	}
 	// This goroutine is outside every recovery the request has (HTTP,
-	// River and Watermill each guard their own), so a panic in the model
+	// River each guard their own), so a panic in the model
 	// client would take the process down. Recover turns it into an error
 	// that fails the answer like any other (ADR-0018).
 	panicErr := oops.In("assistant").Recover(func() {

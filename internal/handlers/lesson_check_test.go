@@ -14,7 +14,6 @@ import (
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
@@ -45,20 +44,6 @@ func TestCheckFinishesALesson(t *testing.T) {
 		Only(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, "finished", *row.State)
-
-	checked := publishedOf[events.SolutionChecked](t, h)
-	require.Len(t, checked, 1)
-	assert.True(t, checked[0].Passed)
-	assert.Equal(t, secondLessonSlug, checked[0].LessonSlug)
-	assert.Equal(t, jsCourseSlug, checked[0].CourseSlug)
-
-	started := publishedLessonStarted(t, h)
-	assert.Equal(t, secondLessonSlug, started.LessonSlug, "submitting starts the lesson it records")
-
-	finished := publishedOf[events.LessonFinished](t, h)
-	require.Len(t, finished, 1)
-	assert.Equal(t, 2, finished[0].OccurrenceCount, "counts the Lesson Progress rows on this enrollment")
-	assert.Empty(t, publishedOf[events.CourseFinished](t, h))
 }
 
 // A failed check is still work done on the lesson: it is recorded, and the
@@ -84,11 +69,6 @@ func TestCheckLeavesAFailedLessonStarted(t *testing.T) {
 		).
 		OnlyX(ctx)
 	assert.Equal(t, "started", *row.State)
-
-	checked := publishedOf[events.SolutionChecked](t, h)
-	require.Len(t, checked, 1)
-	assert.False(t, checked[0].Passed, "the funnel sees the attempt as well as the pass")
-	assert.Empty(t, publishedOf[events.LessonFinished](t, h))
 }
 
 // Lessons may be taken in any order (ADR-0016): the third before the first
@@ -130,18 +110,11 @@ func TestCheckFinishesTheCourseOnItsLastLesson(t *testing.T) {
 			enrollment.CourseID(*lesson.CourseID),
 		).
 		OnlyX(ctx)
-	assert.Equal(t, "finished", *enrolled.State)
-
-	require.Len(t, publishedOf[events.CourseStarted](t, h), 1, "the submission enrolled them")
-	courseFinished := publishedOf[events.CourseFinished](t, h)
-	require.Len(t, courseFinished, 1)
-	assert.Equal(t, "single-lesson", courseFinished[0].Slug)
-	assert.Equal(t, 1, courseFinished[0].OccurrenceCount,
-		"counts the learner's finished enrollments including the one just finished")
+	assert.Equal(t, "finished", *enrolled.State, "the submission enrolled them and finished the course")
 }
 
-// Re-submitting to a lesson already passed is safe: experimenting must not
-// double-count anything the CRM reads.
+// Re-submitting to a lesson already passed is safe: experimenting changes
+// nothing.
 func TestCheckIsSafeToRepeatOnAFinishedLesson(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
@@ -162,10 +135,6 @@ func TestCheckIsSafeToRepeatOnAFinishedLesson(t *testing.T) {
 		).
 		OnlyX(ctx)
 	assert.Equal(t, "finished", *row.State)
-
-	assert.Len(t, publishedOf[events.SolutionChecked](t, h), 1, "the check itself is still a fact")
-	assert.Empty(t, publishedOf[events.LessonFinished](t, h))
-	assert.Empty(t, publishedOf[events.CourseFinished](t, h))
 }
 
 // A learner whose lessons are all finished while their enrollment is not —
@@ -189,9 +158,6 @@ func TestCheckClosesACourseAlreadyEffectivelyFinished(t *testing.T) {
 		).
 		OnlyX(ctx)
 	assert.Equal(t, "finished", *enrolled.State)
-
-	assert.Empty(t, publishedOf[events.LessonFinished](t, h), "no lesson transitioned")
-	require.Len(t, publishedOf[events.CourseFinished](t, h), 1)
 }
 
 // A gap in the learner's history — inherited from a system that allowed any
@@ -258,11 +224,6 @@ func TestGuestCheckAddsToTheCookieAndWritesNoRows(t *testing.T) {
 
 	assert.Equal(t, enrollments, h.DB.Enrollment.Query().CountX(ctx))
 	assert.Equal(t, rows, h.DB.LessonProgress.Query().CountX(ctx))
-
-	assert.Len(t, publishedOf[events.SolutionChecked](t, h), 1, "pre-signup activity stays visible")
-	assert.Empty(t, publishedOf[events.CourseStarted](t, h))
-	assert.Empty(t, publishedOf[events.LessonStarted](t, h))
-	assert.Empty(t, publishedOf[events.LessonFinished](t, h))
 }
 
 // A guest may take a lesson out of order too: the cookie names that lesson and
@@ -297,8 +258,7 @@ func TestGuestCheckAddsToTheCarriedCookie(t *testing.T) {
 	assert.True(t, guest.Has(jsCourseSlug, secondLessonSlug), "and the new pass is added")
 }
 
-// A failed guest check records the fact and nothing else: the cookie changes
-// only on a pass.
+// A failed guest check changes nothing: the cookie changes only on a pass.
 func TestGuestCheckDoesNotAdvanceOnAFailure(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewAnonymousHarness(t)
@@ -310,7 +270,6 @@ func TestGuestCheckDoesNotAdvanceOnAFailure(t *testing.T) {
 	result := submitSolution(t, h, lesson)
 	assert.False(t, result.Response.Passed)
 	assert.Empty(t, h.ResponseCookies(), "nothing to store")
-	assert.Len(t, publishedOf[events.SolutionChecked](t, h), 1)
 }
 
 // A cookie naming a lesson the current version no longer contains resolves to

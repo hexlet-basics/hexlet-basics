@@ -26,8 +26,8 @@ import (
 )
 
 // Transactor is the transaction seam shared by business modules. The callback
-// receives both views of the same PostgreSQL transaction: database/sql for
-// River and Watermill adapters, and ent for application persistence.
+// receives both views of the same PostgreSQL transaction: database/sql for the
+// River adapter, and ent for application persistence.
 type Transactor interface {
 	WithinTx(ctx context.Context, fn func(*sql.Tx, *ent.Client) error) error
 }

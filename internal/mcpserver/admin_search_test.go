@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/eventhandler"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -182,7 +182,7 @@ func TestASearchOverPersonalDataIsRecordedAsAReadOfTheRowsItAnswered(t *testing.
 	session, _ := admin(t, o, bob())
 
 	page := structured(t, call(t, session, "adminListLeads", map[string]any{"locale": "en", "q": "anna@"}))
-	testsupport.Deliver(t, o.Services, eventhandler.StaffReadPersonalData(o.DB))
+	testsupport.WorkEnqueued(t, o.Services, jobs.RecordPersonalDataReadWorker(o.DB))
 
 	records := o.Records("AdminListLeads")
 	require.Len(t, records, 1)

@@ -13,7 +13,6 @@ import (
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/testsupport"
 )
@@ -55,16 +54,9 @@ func TestStartLessonRecordsProgressOnALesson(t *testing.T) {
 
 	owner := row.QueryEnrollment().OnlyX(ctx)
 	assert.Equal(t, *lesson.CourseID, owner.CourseID, "the progress hangs off the learner's enrollment in this course")
-
-	started := publishedLessonStarted(t, h)
-	assert.Equal(t, secondLessonSlug, started.LessonSlug)
-	assert.Equal(t, jsCourseSlug, started.CourseSlug)
-	assert.Equal(t, 2, started.OccurrenceCount, "counts the Lesson Progress rows on this enrollment")
-	assert.Empty(t, publishedOf[events.CourseStarted](t, h), "the learner was already enrolled")
 }
 
-// The first lesson of a course the learner has never touched enrolls them, and
-// both facts are published — course-started counting their started enrollments.
+// The first lesson of a course the learner has never touched enrolls them.
 func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
@@ -85,20 +77,10 @@ func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
 
 	enrolledCourse := h.DB.Course.GetX(ctx, *lesson.CourseID)
 	assert.Equal(t, 1, enrolledCourse.EnrollmentsCount, "the catalogue figure counts the new enrollment")
-
-	courseStarted := publishedOf[events.CourseStarted](t, h)
-	require.Len(t, courseStarted, 1)
-	assert.Equal(t, "single-lesson", courseStarted[0].Slug)
-	assert.Equal(t, 2, courseStarted[0].OccurrenceCount, "the learner's started enrollments, fixture one included")
-
-	started := publishedLessonStarted(t, h)
-	assert.Equal(t, "printing", started.LessonSlug)
-	assert.Equal(t, 1, started.OccurrenceCount)
 }
 
 // Starting is idempotent: pressing the button twice, or coming back to a lesson
-// already passed, succeeds and changes nothing. Publishing a second fact would
-// corrupt the occurrence counts the CRM consumes.
+// already passed, succeeds and changes nothing.
 func TestStartLessonIsIdempotent(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
@@ -111,7 +93,6 @@ func TestStartLessonIsIdempotent(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx), "no row is written")
-	assert.Zero(t, testsupport.PublishedCount(t, h.Services), "an already-finished lesson publishes nothing")
 
 	row := h.DB.LessonProgress.Query().
 		Where(lessonprogress.LessonID(lesson.ID), lessonprogress.UserID(actingUserID(t, h))).
@@ -133,7 +114,9 @@ func TestStartLessonLetsALearnerTakeALessonOutOfOrder(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	assert.Equal(t, before+1, h.DB.LessonProgress.Query().CountX(ctx), "one row, for this lesson")
-	assert.Equal(t, thirdLessonSlug, publishedLessonStarted(t, h).LessonSlug)
+	assert.True(t, h.DB.LessonProgress.Query().
+		Where(lessonprogress.LessonID(lesson.ID), lessonprogress.UserID(actingUserID(t, h))).
+		ExistX(ctx), "and it is the third lesson's")
 }
 
 // A lesson the current version does not contain counts for nothing, so a learner
@@ -191,7 +174,6 @@ func TestStartLessonAnswersAGuestWithoutStoringAnything(t *testing.T) {
 
 	assert.Equal(t, rows, h.DB.LessonProgress.Query().CountX(ctx))
 	assert.Equal(t, enrollments, h.DB.Enrollment.Query().CountX(ctx))
-	assert.Zero(t, testsupport.PublishedCount(t, h.Services), "starting is not a fact for someone with no account")
 }
 
 // A visitor with no cookie may start any lesson: nothing is stored, so there is
@@ -242,28 +224,4 @@ func actingUserID(t *testing.T, h *testsupport.Harness) int {
 	require.True(t, ok)
 
 	return u
-}
-
-func publishedLessonStarted(t *testing.T, h *testsupport.Harness) events.LessonStarted {
-	t.Helper()
-	found := publishedOf[events.LessonStarted](t, h)
-	require.Len(t, found, 1)
-
-	return found[0]
-}
-
-func publishedOf[T events.Event](t *testing.T, h *testsupport.Harness) []T {
-	t.Helper()
-
-	return testsupport.PublishedEvents[T](t, h.Services)
-}
-
-// A lesson that does not exist is a 404: the client can stop looking.
-func TestStartLessonAnswersAnUnknownLessonAsNotFound(t *testing.T) {
-	t.Parallel()
-	h := testsupport.NewHarness(t)
-
-	err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: 2_000_000_000})
-	requireProblem(t, err, http.StatusNotFound)
-	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }

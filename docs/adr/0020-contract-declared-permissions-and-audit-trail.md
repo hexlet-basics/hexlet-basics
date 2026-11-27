@@ -1,8 +1,10 @@
 ---
-status: accepted
+status: accepted; amended by ADR-0031
 ---
 
 # Permissions declared in the contract, and an audit trail
+
+> **Amended by [ADR-0031](0031-a-domain-event-is-a-river-job-for-each-consumer.md):** a read of personal data is recorded by a River job the fact queues (`record_personal_data_read`), not by a Watermill consumer.
 
 Amends [ADR-0011](0011-contract-declared-authentication.md).
 

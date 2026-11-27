@@ -3,7 +3,6 @@ package courseloader_test
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,7 +21,6 @@ import (
 	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/courseloader"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
@@ -61,18 +59,16 @@ func newLoaderWith(
 ) *courseloader.Loader {
 	t.Helper()
 
-	return newLoaderWithCompletion(t, db, txStore, fetcher,
-		events.NewPublisher(txStore, slog.New(slog.DiscardHandler)))
+	return newLoaderWithCompletion(t, db, txStore, fetcher)
 }
 
 // newLoaderWithCompletion builds a loader whose promotion re-evaluates
-// completion through the real progress module, recording the facts it publishes.
+// completion through the real progress module.
 func newLoaderWithCompletion(
 	t *testing.T,
 	db *ent.Client,
 	txStore store.Transactor,
 	fetcher courseloader.Fetcher,
-	publisher events.TxPublisher,
 ) *courseloader.Loader {
 	t.Helper()
 
@@ -84,7 +80,7 @@ func newLoaderWithCompletion(
 
 	// Promotion re-evaluates completion and never runs a submission, so the
 	// loader's progress module needs no exercise runner.
-	tracker := progress.New(db, txStore, publisher, progress.UnavailableRunner{})
+	tracker := progress.New(db, txStore, progress.UnavailableRunner{})
 
 	return courseloader.NewLoader(db, txStore, assets, fetcher, tracker,
 		courseloader.WithClock(func() time.Time { return testsupport.Today }))

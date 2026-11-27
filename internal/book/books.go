@@ -7,13 +7,11 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"time"
 
 	"github.com/samber/oops"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/bookrequest"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
 )
 
@@ -27,27 +25,23 @@ const (
 	StateDownloaded = "downloaded"
 )
 
-// Recorder atomically stores a user's first book request and its
-// BookRequested outbox record, so the fact is raised exactly once per user.
+// Recorder stores a user's book request, once per user.
 type Recorder struct {
-	store     store.Transactor
-	publisher events.TxPublisher
-	now       func() time.Time
+	store store.Transactor
 }
 
 // NewRecorder builds the production book request recorder.
-func NewRecorder(txStore store.Transactor, publisher events.TxPublisher) *Recorder {
-	return &Recorder{store: txStore, publisher: publisher, now: time.Now}
+func NewRecorder(txStore store.Transactor) *Recorder {
+	return &Recorder{store: txStore}
 }
 
 // Request records the user's request, idempotently. Legacy did
-// `find_or_initialize_by` and published only for a new record; here the unique
-// index on user_id decides instead, so two concurrent first requests still
-// store one row and raise one event. `ON CONFLICT DO NOTHING` returns no row
-// for a repeat, which is how a repeat is told apart from a first request, and
-// it does not abort the transaction.
-func (r *Recorder) Request(ctx context.Context, userID int, locale string) error {
-	err := r.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
+// `find_or_initialize_by`; here the unique index on user_id decides instead, so
+// two concurrent first requests still store one row. `ON CONFLICT DO NOTHING`
+// leaves a repeat alone without aborting the transaction, and returns no row
+// for it.
+func (r *Recorder) Request(ctx context.Context, userID int) error {
+	err := r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		_, err := db.BookRequest.Create().
 			SetUserID(userID).
 			SetState(StateRequested).
@@ -60,14 +54,6 @@ func (r *Recorder) Request(ctx context.Context, userID int, locale string) error
 
 		if err != nil {
 			return errs.Wrapf(err, "save book request")
-		}
-
-		err = r.publisher.Publish(ctx, tx, events.BookRequested{
-			Locale:     locale,
-			OccurredAt: r.now().UTC(),
-		})
-		if err != nil {
-			return err
 		}
 
 		return nil

@@ -1,6 +1,5 @@
-// Command worker is the asynchronous process: the Watermill event router and
-// the River job queue, with a health-only listener. The HTTP API runs in
-// cmd/server.
+// Command worker is the asynchronous process: the River job queue, with a
+// health-only listener. The HTTP API runs in cmd/server.
 package main
 
 import (
@@ -15,8 +14,8 @@ import (
 	"hexletbasics/internal/di"
 )
 
-// shutdownTimeout bounds process cleanup after River and Watermill have been
-// asked to drain. Deployment termination grace must exceed this value.
+// shutdownTimeout bounds process cleanup after River has been asked to drain.
+// Deployment termination grace must exceed this value.
 const shutdownTimeout = 15 * time.Second
 
 // main owns the process exit code and nothing else: all the work is in run,
@@ -56,7 +55,6 @@ func run(signalCtx context.Context, stopSignals func()) error {
 
 	app := application{
 		jobs:   dependencies.RiverClient,
-		events: dependencies.EventRuntime,
 		logger: dependencies.Logger,
 		health: dependencies.HealthServer,
 		probes: dependencies.Probes,

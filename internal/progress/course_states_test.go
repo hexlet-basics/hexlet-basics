@@ -14,7 +14,7 @@ import (
 func TestCourseStatesOfNoCoursesIsEmpty(t *testing.T) {
 	db := testsupport.NewClient(t)
 
-	states, err := progress.New(db, nil, nil, nil).CourseStates(t.Context(), fixture.ID(fixture.UserAdminLearner), nil)
+	states, err := progress.New(db, nil, nil).CourseStates(t.Context(), fixture.ID(fixture.UserAdminLearner), nil)
 	require.NoError(t, err)
 	assert.Empty(t, states)
 }

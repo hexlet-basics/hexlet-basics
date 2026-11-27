@@ -13,13 +13,12 @@ import (
 )
 
 var (
-	errRuntimeSignal      = errors.New("runtime interrupted by signal")
-	errJobQueueStopped    = errors.New("job queue stopped unexpectedly")
-	errEventRouterStopped = errors.New("domain event router stopped unexpectedly")
+	errRuntimeSignal   = errors.New("runtime interrupted by signal")
+	errJobQueueStopped = errors.New("job queue stopped unexpectedly")
 )
 
-// jobRuntime, eventRuntime and httpRuntime stay interfaces: the runtime tests
-// substitute hand-written fakes (stuckJobs, stuckServer, healthServer).
+// jobRuntime and httpRuntime stay interfaces: the runtime tests substitute
+// hand-written fakes (stuckJobs, stuckServer, healthServer).
 type jobRuntime interface {
 	Start(ctx context.Context) error
 	Stop(ctx context.Context) error
@@ -33,23 +32,14 @@ type httpRuntime interface {
 	Close() error
 }
 
-type eventRuntime interface {
-	Run(ctx context.Context) error
-	// Running is closed once the router has started every handler.
-	Running() <-chan struct{}
-	Close() error
-}
-
-// application owns the asynchronous process runtime. River starts before
-// Watermill so event handlers can enqueue immediately; shutdown reverses that
-// order so no new jobs arrive while workers drain.
+// application owns the asynchronous process runtime: the River job queue,
+// which is also how domain events reach their consumers (ADR-0031).
 type application struct {
 	jobs   jobRuntime
-	events eventRuntime
 	logger *slog.Logger
 	// health, when set, is the health-only listener (/healthz, /readyz). It
 	// starts with the runtime and is stopped last, so /readyz can report 503
-	// while the queue and router drain.
+	// while the queue drains.
 	health httpRuntime
 	probes *health.Probes
 }
@@ -61,16 +51,12 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 	defer cancelProcess()
 
 	group, groupCtx := errgroup.WithContext(processCtx)
-	riverReady := make(chan struct{})
 	// jobsStartSettled is closed once starting the job queue has either succeeded
 	// or failed. A shutdown waits for it before asking whether the queue was
 	// started: a signal that lands in the middle of the start would otherwise skip
 	// stopping a queue that then finishes starting, and nothing would ever stop it.
 	jobsStartSettled := make(chan struct{})
-	state := &runtimeState{
-		jobsStarted:   atomic.Bool{},
-		eventsStarted: atomic.Bool{},
-	}
+	state := &runtimeState{jobsStarted: atomic.Bool{}}
 
 	group.Go(func() error {
 		select {
@@ -83,8 +69,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 		}
 	})
 
-	group.Go(func() error { return a.runJobs(processCtx, state, jobsStartSettled, riverReady) })
-	group.Go(func() error { return a.runEvents(processCtx, groupCtx, state, riverReady) })
+	group.Go(func() error { return a.runJobs(processCtx, groupCtx, state, jobsStartSettled) })
 
 	if a.health != nil {
 		group.Go(func() error { return a.serveHealth(groupCtx) })
@@ -112,9 +97,9 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 }
 
 // runJobs starts the job queue and blocks until it stops. settled is closed
-// once the start has either succeeded or failed, and ready after a success, so
-// the event router starts only behind a queue that is up.
-func (a *application) runJobs(processCtx context.Context, state *runtimeState, settled, ready chan<- struct{}) error {
+// once the start has either succeeded or failed; only a started queue makes
+// the worker ready.
+func (a *application) runJobs(processCtx, groupCtx context.Context, state *runtimeState, settled chan<- struct{}) error {
 	err := a.jobs.Start(processCtx)
 	if err == nil {
 		state.markJobsStarted()
@@ -126,48 +111,17 @@ func (a *application) runJobs(processCtx context.Context, state *runtimeState, s
 		return errs.Wrapf(err, "start job queue")
 	}
 
-	close(ready)
-
-	<-a.jobs.Stopped()
-
-	return errJobQueueStopped
-}
-
-// runEvents runs the domain event router once the job queue is ready.
-func (a *application) runEvents(processCtx, groupCtx context.Context, state *runtimeState, riverReady <-chan struct{}) error {
-	select {
-	case <-riverReady:
-	case <-groupCtx.Done():
-		return nil
+	if a.probes != nil {
+		a.probes.Started()
 	}
-
-	// The router counts as started only once it reports itself running.
-	// Watermill's Close waits for the handlers to come up, so closing a
-	// router that has not got there yet blocks for its whole close timeout;
-	// a shutdown that arrives earlier relies on the cancelled process
-	// context to stop it instead.
-	go func() {
-		select {
-		case <-a.events.Running():
-			state.markEventsStarted()
-
-			if a.probes != nil {
-				a.probes.Started()
-			}
-		case <-groupCtx.Done():
-		}
-	}()
 
 	if a.logger != nil {
 		a.logger.InfoContext(groupCtx, "async worker started")
 	}
 
-	err := a.events.Run(processCtx)
-	if err != nil {
-		return errs.Wrapf(err, "run domain event router")
-	}
+	<-a.jobs.Stopped()
 
-	return errEventRouterStopped
+	return errJobQueueStopped
 }
 
 // serveHealth serves the health listener until the group is done.
@@ -227,14 +181,6 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 
 	var shutdownErrors []error
 
-	if state.eventsWereStarted() {
-		err := a.events.Close()
-		if err != nil {
-			stopErr := errs.Wrapf(err, "stop domain event router")
-			shutdownErrors = append(shutdownErrors, stopErr)
-		}
-	}
-
 	if state.jobsWereStarted() {
 		err := a.jobs.Stop(ctx)
 		if err != nil {
@@ -262,14 +208,9 @@ func (a *application) shutdown(parent context.Context, state *runtimeState, canc
 }
 
 type runtimeState struct {
-	jobsStarted   atomic.Bool
-	eventsStarted atomic.Bool
+	jobsStarted atomic.Bool
 }
 
 func (s *runtimeState) markJobsStarted() { s.jobsStarted.Store(true) }
 
-func (s *runtimeState) markEventsStarted() { s.eventsStarted.Store(true) }
-
 func (s *runtimeState) jobsWereStarted() bool { return s.jobsStarted.Load() }
-
-func (s *runtimeState) eventsWereStarted() bool { return s.eventsStarted.Load() }
