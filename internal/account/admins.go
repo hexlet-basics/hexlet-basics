@@ -16,6 +16,25 @@ var ErrLastAdmin = errors.Join(domain.ErrConflict, errLastAdmin)
 // errLastAdmin is the message of ErrLastAdmin.
 var errLastAdmin = errors.New("the last administrator cannot be removed")
 
+// The self-protection refusals of the account writes (ADR-0020): whoever may
+// manage users must not raise themselves or remove their own footing. Each is a
+// domain.ErrForbidden, distinct for the adapter that words it.
+var (
+	// ErrAdministratorFlagRestricted is a non-administrator changing the
+	// administrator flag: a staff member who holds users.update could otherwise
+	// make themselves, or anyone, an administrator.
+	ErrAdministratorFlagRestricted = errors.Join(domain.ErrForbidden, errAdministratorFlagRestricted)
+	// ErrOwnAccountRemoval is an administrator removing their own account
+	// through the admin operations; the profile's own removal is the way.
+	ErrOwnAccountRemoval = errors.Join(domain.ErrForbidden, errOwnAccountRemoval)
+)
+
+// The messages of the refusals above.
+var (
+	errAdministratorFlagRestricted = errors.New("administrator flag restricted")
+	errOwnAccountRemoval           = errors.New("own account removal")
+)
+
 // EnsureAnotherAdmin is called before userID stops being an administrator
 // (demoted, deleted or removing their own account). It returns ErrLastAdmin when
 // userID is one and no other active administrator exists; for anyone else it

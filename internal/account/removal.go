@@ -8,6 +8,7 @@ import (
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/user"
 	"hexletbasics/ent/useraccount"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/store"
 )
 
@@ -23,7 +24,10 @@ func NotRemoved() predicate.User {
 	return user.Or(user.StateIsNil(), user.StateNEQ(StateRemoved))
 }
 
-// Remover deletes accounts the way legacy `mark_as_removed!` did.
+// Remover removes accounts the way legacy `mark_as_removed!` did. Removing an
+// account has one meaning whoever asks (ADR-0030): the row stays, with what
+// identifies the person erased, because its progress, reviews and memberships
+// still point at it.
 type Remover struct {
 	store store.Transactor
 }
@@ -33,13 +37,30 @@ func NewRemover(txStore store.Transactor) *Remover {
 	return &Remover{store: txStore}
 }
 
-// Remove moves the user to the removed state and erases what identifies them:
+// RemoveOwn moves the user to the removed state and erases what identifies them:
 // names, email, phone, password and confirmation token (legacy clean_fields),
 // and the linked social accounts (legacy remove_accounts). Nulling the email
 // and phone is also what lets the same address register again, since the
 // unique indexes on both skip NULL. One transaction, so a failure never leaves
-// an account half-erased.
-func (r *Remover) Remove(ctx context.Context, userID int) error {
+// an account half-erased. It is the person's own removal, from their profile;
+// the last administrator is refused with ErrLastAdmin.
+func (r *Remover) RemoveOwn(ctx context.Context, userID int) error {
+	return r.remove(ctx, userID)
+}
+
+// Remove removes another user's account on an administrator's behalf, the
+// same way. The actor's own account is ErrOwnAccountRemoval (their profile is
+// the way to it), a missing one domain.ErrNotFound, and the last administrator
+// ErrLastAdmin.
+func (r *Remover) Remove(ctx context.Context, actor domain.Actor, userID int) error {
+	if actor.UserID == userID {
+		return ErrOwnAccountRemoval
+	}
+
+	return r.remove(ctx, userID)
+}
+
+func (r *Remover) remove(ctx context.Context, userID int) error {
 	return r.store.WithinTx(ctx, func(_ *sql.Tx, tx *ent.Client) error {
 		err := EnsureAnotherAdmin(ctx, tx, userID)
 		if err != nil {

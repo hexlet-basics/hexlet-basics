@@ -5,8 +5,6 @@ package ent
 import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/inputconv"
-
-	"github.com/lib/pq"
 )
 
 // SetInput applies the contract BannerInput to the create builder: required
@@ -342,27 +340,6 @@ func (u *ReviewUpdateOne) SetInput(i *api.ReviewInput) *ReviewUpdateOne {
 	} else {
 		u.SetPinned(i.Pinned.Value)
 	}
-	return u
-}
-
-// SetInput applies the contract StaffMemberInput to the create builder: required
-// contract fields are set directly, nullable ones go through SetNillable so a
-// null leaves the column unset, set-only ones apply only when non-null.
-func (c *StaffMemberCreate) SetInput(i *api.StaffMemberInput) *StaffMemberCreate {
-	c.SetUserID(int(i.UserId))
-	c.SetRoleID(int(i.RoleId))
-	c.SetAllowedLocales(pq.StringArray(i.AllowedLocales))
-	return c
-}
-
-// SetInput applies the contract StaffMemberInput to the update builder: required
-// contract fields are set directly, a null nullable field clears the column
-// (the legacy assign_attributes semantics), a null set-only field leaves the
-// column untouched.
-func (u *StaffMemberUpdateOne) SetInput(i *api.StaffMemberInput) *StaffMemberUpdateOne {
-	u.SetUserID(int(i.UserId))
-	u.SetRoleID(int(i.RoleId))
-	u.SetAllowedLocales(pq.StringArray(i.AllowedLocales))
 	return u
 }
 

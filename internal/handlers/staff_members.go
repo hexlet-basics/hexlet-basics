@@ -4,12 +4,13 @@ import (
 	"context"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/permission"
 )
 
-// The admin operations are generated (ent/admincrud.go); the schema's AdminCRUD
-// annotation carries the eager-loaded user and role (with its permissions).
-// user_id is unique (one staff record per user), so a duplicate grant surfaces
-// as 409 via the central handler.
+// The reads are generated (ent/admincrud.go, AdminCRUD ReadOnly, with the
+// eager-loaded user and role); the writes go through permission.StaffEditor,
+// which holds the self-protection rules. user_id is unique (one staff record
+// per user), so a duplicate grant surfaces as 409.
 
 func (s *Server) AdminListStaffMembers(ctx context.Context, params api.AdminListStaffMembersParams) (*api.StaffMemberPage, error) {
 	result, err := s.db.StaffMember.AdminList(ctx, params.Page, params.PerPage, s.conv.ToStaffMembers)
@@ -30,43 +31,32 @@ func (s *Server) AdminGetStaffMember(ctx context.Context, params api.AdminGetSta
 }
 
 func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMemberInput) (*api.StaffMember, error) {
-	err := s.selfProtection.StaffRecordChange(ctx, actorOfRequest(ctx), 0, int(req.UserId))
+	row, err := s.staffEditor.Create(ctx, actorOfRequest(ctx), staffMemberFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := s.db.StaffMember.AdminCreate(ctx, req, s.conv.ToStaffMember)
-	if err != nil {
-		return result, errs.Wrapf(err, "admin create staff member")
-	}
-
-	return result, nil
+	return s.AdminGetStaffMember(ctx, api.AdminGetStaffMemberParams{ID: int32(row.ID)}) //nolint:gosec // G115: a row id fits the contract's int32
 }
 
 func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMemberInput, params api.AdminUpdateStaffMemberParams) (*api.StaffMember, error) {
-	err := s.selfProtection.StaffRecordChange(ctx, actorOfRequest(ctx), int(params.ID), int(req.UserId))
+	_, err := s.staffEditor.Update(ctx, actorOfRequest(ctx), int(params.ID), staffMemberFieldsOf(req))
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := s.db.StaffMember.AdminUpdate(ctx, params.ID, req, s.conv.ToStaffMember)
-	if err != nil {
-		return result, errs.Wrapf(err, "admin update staff member")
-	}
-
-	return result, nil
+	return s.AdminGetStaffMember(ctx, api.AdminGetStaffMemberParams(params))
 }
 
 func (s *Server) AdminDeleteStaffMember(ctx context.Context, params api.AdminDeleteStaffMemberParams) error {
-	err := s.selfProtection.StaffRecordChange(ctx, actorOfRequest(ctx), int(params.ID), 0)
-	if err != nil {
-		return err
-	}
+	return s.staffEditor.Delete(ctx, actorOfRequest(ctx), int(params.ID))
+}
 
-	err = s.db.StaffMember.AdminDelete(ctx, params.ID)
-	if err != nil {
-		return errs.Wrapf(err, "admin delete staff member")
+// staffMemberFieldsOf is the contract's StaffMemberInput as the editor's command.
+func staffMemberFieldsOf(in *api.StaffMemberInput) permission.StaffMemberFields {
+	return permission.StaffMemberFields{
+		UserID:         int(in.UserId),
+		RoleID:         int(in.RoleId),
+		AllowedLocales: in.AllowedLocales,
 	}
-
-	return nil
 }

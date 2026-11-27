@@ -216,6 +216,9 @@ func (UnimplementedHandler) AdminDeleteStaffMember(ctx context.Context, params A
 
 // AdminDeleteUser implements adminDeleteUser operation.
 //
+// Remove a user's account as their own removal does: the row stays, erased. The caller's own account
+// is a 403 and the last administrator a 409 (ADR-0030).
+//
 // DELETE /api/admin/api/users/{id}
 func (UnimplementedHandler) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error {
 	return ht.ErrNotImplemented

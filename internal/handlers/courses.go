@@ -32,7 +32,6 @@ import (
 	"hexletbasics/internal/qnaitem"
 	"hexletbasics/internal/relatedcourse"
 	"hexletbasics/internal/search"
-	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/signin"
 	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/sitemap"
@@ -103,8 +102,9 @@ type Server struct {
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover *blog.Remover
 	// permissions writes a role's grants.
-	permissions    *permission.Permissions
-	selfProtection *selfprotection.Guard
+	permissions *permission.Permissions
+	// staffEditor writes the Staff Member records.
+	staffEditor *permission.StaffEditor
 	// dashboard assembles the learner's courses with cards and progress.
 	dashboard *dashboard.Dashboard
 	// sitemap reads the rows behind the sitemap page.
@@ -154,7 +154,7 @@ type Deps struct {
 	Assistant         *assistant.Chat
 	PostRemover       *blog.Remover
 	Permissions       *permission.Permissions
-	SelfProtection    *selfprotection.Guard
+	StaffEditor       *permission.StaffEditor
 	Dashboard         *dashboard.Dashboard
 	Sitemap           *sitemap.Sitemap
 	Search            *search.Catalogue
@@ -207,7 +207,7 @@ func NewServer(deps Deps) *Server {
 		blogReader:           blog.NewReader(deps.DB, deps.Settings.PublicURL),
 		blogLikes:            blog.NewLiker(deps.DB),
 		permissions:          deps.Permissions,
-		selfProtection:       deps.SelfProtection,
+		staffEditor:          deps.StaffEditor,
 		dashboard:            deps.Dashboard,
 		sitemap:              deps.Sitemap,
 		searcher:             deps.Search,

@@ -8,6 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/samber/lo"
+	"hexletbasics/internal/account"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/testsupport"
 )
@@ -195,11 +197,13 @@ func TestAdminUpdateUser(t *testing.T) {
 	assert.Nil(t, row.LastName, "null lastName should clear the column")
 }
 
-func TestAdminDeleteUser(t *testing.T) {
+// Removing a user through the admin operations is the same removal as the
+// person's own (ADR-0030): the row stays, removed and with what identifies them
+// erased, because their progress and reviews still point at it.
+func TestAdminDeleteUserRemovesTheAccount(t *testing.T) {
 	t.Parallel()
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
-	totalUsers := h.DB.User.Query().CountX(ctx)
 
 	target := userByEmail(t, h, "blank-user@example.com")
 
@@ -207,9 +211,10 @@ func TestAdminDeleteUser(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
-	total, err := h.DB.User.Query().Count(ctx)
-	require.NoError(t, err)
-	assert.Equal(t, totalUsers-1, total)
+	removed := h.DB.User.GetX(ctx, int(target.ID))
+	assert.Equal(t, account.StateRemoved, lo.FromPtr(removed.State))
+	assert.Nil(t, removed.Email, "the email is erased, so the address can register again")
+	assert.Nil(t, removed.PasswordDigest)
 }
 
 func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {

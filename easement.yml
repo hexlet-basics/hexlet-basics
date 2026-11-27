@@ -71,7 +71,6 @@ components:
         internal/qnaitem,
         internal/relatedcourse,
         internal/search,
-        internal/selfprotection,
         internal/signin,
         internal/sitebanner,
         internal/sitemap,

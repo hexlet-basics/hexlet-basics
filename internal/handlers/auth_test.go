@@ -71,7 +71,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 		Assistant:         nil,
 		PostRemover:       nil,
 		Permissions:       nil,
-		SelfProtection:    nil,
+		StaffEditor:       nil,
 		Dashboard:         nil,
 		Sitemap:           nil,
 		Search:            nil,

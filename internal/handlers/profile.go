@@ -53,7 +53,7 @@ func (s *Server) UpdateProfile(ctx context.Context, req *api.ProfileInput) (*api
 func (s *Server) DeleteAccount(ctx context.Context) error {
 	u := MustAuthenticatedUser(ctx)
 
-	err := s.remover.Remove(ctx, u.ID)
+	err := s.remover.RemoveOwn(ctx, u.ID)
 	if err != nil {
 		return err
 	}

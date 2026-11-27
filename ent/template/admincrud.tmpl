@@ -95,6 +95,8 @@ func (c *{{ $client }}) AdminGet(ctx context.Context, id int32, conv func(*{{ $n
 	return &item, nil
 }
 
+{{- if not $ann.ReadOnly }}
+
 // AdminCreate creates a {{ $n.Name }} from the contract input.
 func (c *{{ $client }}) AdminCreate(ctx context.Context, in *api.{{ $input }}, conv func(*{{ $n.Name }}) api.{{ $detail }}) (*api.{{ $detail }}, error) {
 	row, err := c.Create().SetInput(in).Save(ctx)
@@ -129,6 +131,7 @@ func (c *{{ $client }}) AdminUpdate(ctx context.Context, id int32, in *api.{{ $i
 func (c *{{ $client }}) AdminDelete(ctx context.Context, id int32) error {
 	return c.DeleteOneID(int(id)).Exec(ctx)
 }
+{{- end }}
 {{- end }}
 {{ end }}
 

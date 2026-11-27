@@ -101,7 +101,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		Assistant:         nil,
 		PostRemover:       nil,
 		Permissions:       nil,
-		SelfProtection:    nil,
+		StaffEditor:       nil,
 		Dashboard:         nil,
 		Sitemap:           nil,
 		Search:            nil,

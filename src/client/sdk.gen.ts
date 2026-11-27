@@ -108,6 +108,10 @@ export const adminSearchUsers = <ThrowOnError extends boolean = false>(options: 
   ...options
 });
 
+/**
+ * Remove a user's account as their own removal does: the row stays, erased.
+ *       The caller's own account is a 403 and the last administrator a 409 (ADR-0030).
+ */
 export const adminDeleteUser = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteUserData, ThrowOnError>): RequestResult<AdminDeleteUserResponses, AdminDeleteUserErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteUserResponses, AdminDeleteUserErrors, ThrowOnError>({
   security: [{
       key: 'AdminSession',

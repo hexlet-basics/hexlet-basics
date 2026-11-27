@@ -693,6 +693,8 @@ interface AdminUsers {
       the central ent-error handler. */
   @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.update", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud | ApiError;
 
+  /** Remove a user's account as their own removal does: the row stays, erased.
+      The caller's own account is a 403 and the last administrator a 409 (ADR-0030). */
   @delete @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "users.delete", kind: "write" }) @extension("x-requires-capability", "mcp.manage") @operationId("adminDeleteUser") delete(@path id: int32): NoContent | ApiError;
 }
 

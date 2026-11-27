@@ -46,7 +46,6 @@ import (
 	"hexletbasics/internal/qnaitem"
 	"hexletbasics/internal/relatedcourse"
 	"hexletbasics/internal/search"
-	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/signin"
 	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/sitemap"
@@ -95,7 +94,7 @@ type handlerServices struct {
 	Assistant         *assistant.Chat            `do:""`
 	PostRemover       *blog.Remover              `do:""`
 	Permissions       *permission.Permissions    `do:""`
-	SelfProtection    *selfprotection.Guard      `do:""`
+	StaffEditor       *permission.StaffEditor    `do:""`
 	Dashboard         *dashboard.Dashboard       `do:""`
 	Sitemap           *sitemap.Sitemap           `do:""`
 	Search            *search.Catalogue          `do:""`
@@ -258,13 +257,13 @@ var serverPackage = do.Package(
 
 		return blog.NewRemover(db), nil
 	}),
-	do.Lazy[*selfprotection.Guard](func(i do.Injector) (*selfprotection.Guard, error) {
+	do.Lazy[*permission.StaffEditor](func(i do.Injector) (*permission.StaffEditor, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
 		}
 
-		return selfprotection.NewGuard(db), nil
+		return permission.NewStaffEditor(db), nil
 	}),
 	do.Lazy[*permission.Permissions](func(i do.Injector) (*permission.Permissions, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -546,7 +545,7 @@ var serverPackage = do.Package(
 			Assistant:         services.Assistant,
 			PostRemover:       services.PostRemover,
 			Permissions:       services.Permissions,
-			SelfProtection:    services.SelfProtection,
+			StaffEditor:       services.StaffEditor,
 			Dashboard:         services.Dashboard,
 			Sitemap:           services.Sitemap,
 			Search:            services.Search,

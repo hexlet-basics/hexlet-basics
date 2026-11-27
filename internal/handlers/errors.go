@@ -16,7 +16,7 @@ import (
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
-	"hexletbasics/internal/selfprotection"
+	"hexletbasics/internal/permission"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/transition"
 )
@@ -256,10 +256,10 @@ func details() []struct {
 		{errEmailLinkInvalid, localization.EmailLinkInvalid},
 		{errOAuthRequestNotFound, localization.OAuthRequestNotFound},
 		{errConnectedAppNotFound, localization.ConnectedAppNotFound},
-		{selfprotection.ErrOwnStaffRecord, localization.OwnStaffRecord},
-		{selfprotection.ErrOwnRoleGrants, localization.OwnRoleGrants},
-		{selfprotection.ErrAdministratorFlagRestricted, localization.AdministratorFlagRestricted},
-		{selfprotection.ErrOwnAccountDeletion, localization.OwnAccountDeletion},
+		{permission.ErrOwnStaffRecord, localization.OwnStaffRecord},
+		{permission.ErrOwnRoleGrants, localization.OwnRoleGrants},
+		{account.ErrAdministratorFlagRestricted, localization.AdministratorFlagRestricted},
+		{account.ErrOwnAccountRemoval, localization.OwnAccountDeletion},
 		{account.ErrLastAdmin, localization.LastAdministrator},
 	}
 }

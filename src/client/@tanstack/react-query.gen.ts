@@ -198,6 +198,10 @@ export const adminSearchUsersOptions = (options: Options<AdminSearchUsersData>) 
   queryKey: adminSearchUsersQueryKey(options)
 });
 
+/**
+ * Remove a user's account as their own removal does: the row stays, erased.
+ *       The caller's own account is a 403 and the last administrator a 409 (ADR-0030).
+ */
 export const adminDeleteUserMutation = (options?: Partial<Options<AdminDeleteUserData>>): UseMutationOptions<AdminDeleteUserResponse, AdminDeleteUserError, Options<AdminDeleteUserData>> => {
   const mutationOptions: UseMutationOptions<AdminDeleteUserResponse, AdminDeleteUserError, Options<AdminDeleteUserData>> = {
     mutationFn: async (fnOptions) => {

@@ -157,6 +157,9 @@ type Invoker interface {
 	AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) error
 	// AdminDeleteUser invokes adminDeleteUser operation.
 	//
+	// Remove a user's account as their own removal does: the row stays, erased. The caller's own account
+	// is a 403 and the last administrator a 409 (ADR-0030).
+	//
 	// DELETE /api/admin/api/users/{id}
 	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error
 	// AdminFetch invokes adminFetch operation.
@@ -4021,6 +4024,9 @@ func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDel
 }
 
 // AdminDeleteUser invokes adminDeleteUser operation.
+//
+// Remove a user's account as their own removal does: the row stays, erased. The caller's own account
+// is a 403 and the last administrator a 409 (ADR-0030).
 //
 // DELETE /api/admin/api/users/{id}
 func (c *Client) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error {

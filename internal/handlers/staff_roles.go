@@ -84,28 +84,19 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 }
 
 // AdminUpdateRolePermissions applies the submitted set; the permission
-// module writes them in one transaction. A missing role is a 404,
-// before any write, and an undeclared grant a 422.
+// module writes them in one transaction. A missing role is a 404, the caller's
+// own role a 403 for a non-administrator, and an undeclared grant a 422, all
+// before any write.
 func (s *Server) AdminUpdateRolePermissions(
 	ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams,
 ) (*api.StaffRoleDetail, error) {
 	roleID := int(params.RoleId)
 
-	err := s.selfProtection.OwnRoleGrants(ctx, actorOfRequest(ctx), roleID)
-	if err != nil {
-		return nil, err
+	err := s.permissions.Set(ctx, actorOfRequest(ctx), roleID, req.Grants)
+	if errors.Is(err, permission.ErrUnknownPermission) {
+		return nil, invalidText("grants", strings.Join(permission.UnknownNames(err), ", "))
 	}
 
-	err = s.permissions.Check(ctx, roleID, req.Grants)
-	if err != nil {
-		if errors.Is(err, permission.ErrUnknownPermission) {
-			return nil, invalidText("grants", strings.Join(permission.UnknownNames(err), ", "))
-		}
-
-		return nil, err
-	}
-
-	err = s.permissions.Apply(ctx, roleID, req.Grants)
 	if err != nil {
 		return nil, err
 	}

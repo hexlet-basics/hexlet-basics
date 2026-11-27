@@ -47,7 +47,6 @@ import (
 	"hexletbasics/internal/qnaitem"
 	"hexletbasics/internal/relatedcourse"
 	"hexletbasics/internal/search"
-	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/signin"
 	"hexletbasics/internal/sitebanner"
 	"hexletbasics/internal/sitemap"
@@ -390,7 +389,7 @@ func handlerDeps(
 		// The real remover over the savepoint transactor, like the others.
 		PostRemover:       blog.NewRemover(transactor),
 		Permissions:       permission.NewPermissions(db, transactor),
-		SelfProtection:    selfprotection.NewGuard(db),
+		StaffEditor:       permission.NewStaffEditor(db),
 		Dashboard:         dashboard.New(db, landingpage.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
 		Sitemap:           sitemap.New(db),
 		Search:            search.NewCatalogue(db),

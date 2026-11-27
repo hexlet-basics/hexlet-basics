@@ -5049,6 +5049,9 @@ func (s *Server) handleAdminDeleteStaffMemberRequest(args [1]string, argsEscaped
 
 // handleAdminDeleteUserRequest handles adminDeleteUser operation.
 //
+// Remove a user's account as their own removal does: the row stays, erased. The caller's own account
+// is a 403 and the last administrator a 409 (ADR-0030).
+//
 // DELETE /api/admin/api/users/{id}
 func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}

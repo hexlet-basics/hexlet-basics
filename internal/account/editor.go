@@ -3,7 +3,10 @@ package account
 import (
 	"context"
 
+	"github.com/samber/lo"
+
 	"hexletbasics/ent"
+	"hexletbasics/internal/domain"
 	"hexletbasics/internal/store"
 )
 
@@ -17,12 +20,12 @@ type UserFields struct {
 	Admin     *bool
 }
 
-// Editor creates, changes and deletes user records on an administrator's
-// behalf. It owns the rules around them, so each surface that edits users
-// (the admin pages, the management pages, any other adapter) applies the same
-// ones: the email is stored the way registration stores it, or the account
-// could not be found at sign-in, and the last administrator can neither lose
-// the flag nor be deleted.
+// Editor creates and changes user records on an administrator's behalf. It
+// owns the rules around them, so each surface that edits users (the admin
+// pages, the MCP admin tools through them) applies the same ones: the email is
+// stored the way registration stores it, or the account could not be found at
+// sign-in; only an administrator changes the administrator flag; and the last
+// administrator cannot lose it. Removing an account is the Remover's.
 type Editor struct {
 	db *ent.Client
 }
@@ -32,10 +35,16 @@ func NewEditor(db *ent.Client) *Editor {
 	return &Editor{db: db}
 }
 
-// Create adds a user. Email uniqueness is the baseline unique index's job, not
-// a pre-check, so there is no race; a duplicate is an invalid input naming the
-// email field (domain.ErrInvalid).
-func (e *Editor) Create(ctx context.Context, fields UserFields) (*ent.User, error) {
+// Create adds a user on actor's behalf. Email uniqueness is the baseline unique
+// index's job, not a pre-check, so there is no race; a duplicate is an invalid
+// input naming the email field (domain.ErrInvalid). A non-administrator
+// creating an administrator is ErrAdministratorFlagRestricted.
+func (e *Editor) Create(ctx context.Context, actor domain.Actor, fields UserFields) (*ent.User, error) {
+	err := flagChange(actor, false, lo.FromPtr(fields.Admin))
+	if err != nil {
+		return nil, err
+	}
+
 	u, err := e.db.User.Create().
 		SetEmail(NormalizeEmail(fields.Email)).
 		SetNillableFirstName(fields.FirstName).
@@ -46,11 +55,23 @@ func (e *Editor) Create(ctx context.Context, fields UserFields) (*ent.User, erro
 	return u, store.ToDomain(err, userUniques()...)
 }
 
-// Update replaces a user's editable fields. A missing id is domain.ErrNotFound;
-// taking the flag from the last administrator is ErrLastAdmin.
-func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.User, error) {
-	if fields.Admin == nil || !*fields.Admin {
-		err := EnsureAnotherAdmin(ctx, e.db, id)
+// Update replaces a user's editable fields on actor's behalf. A missing id is
+// domain.ErrNotFound; a non-administrator changing the flag is
+// ErrAdministratorFlagRestricted; taking the flag from the last administrator
+// is ErrLastAdmin.
+func (e *Editor) Update(ctx context.Context, actor domain.Actor, id int, fields UserFields) (*ent.User, error) {
+	current, err := e.db.User.Get(ctx, id)
+	if err != nil {
+		return nil, store.ToDomain(err)
+	}
+
+	err = flagChange(actor, lo.FromPtr(current.Admin), lo.FromPtr(fields.Admin))
+	if err != nil {
+		return nil, err
+	}
+
+	if !lo.FromPtr(fields.Admin) {
+		err = EnsureAnotherAdmin(ctx, e.db, id)
 		if err != nil {
 			return nil, store.ToDomain(err)
 		}
@@ -80,13 +101,12 @@ func (e *Editor) Update(ctx context.Context, id int, fields UserFields) (*ent.Us
 	return u, store.ToDomain(err, userUniques()...)
 }
 
-// Delete removes a user. A missing id is domain.ErrNotFound; the last
-// administrator is refused with ErrLastAdmin.
-func (e *Editor) Delete(ctx context.Context, id int) error {
-	err := EnsureAnotherAdmin(ctx, e.db, id)
-	if err != nil {
-		return store.ToDomain(err)
+// flagChange lets only an administrator change the administrator flag. was is
+// the flag before the change (false for a new user), will the flag after.
+func flagChange(actor domain.Actor, was, will bool) error {
+	if was == will || actor.Administrator {
+		return nil
 	}
 
-	return store.ToDomain(e.db.User.DeleteOneID(id).Exec(ctx))
+	return ErrAdministratorFlagRestricted
 }

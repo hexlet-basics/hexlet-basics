@@ -333,6 +333,9 @@ paths:
         kind: write
     delete:
       operationId: adminDeleteUser
+      description: |-
+        Remove a user's account as their own removal does: the row stays, erased.
+              The caller's own account is a 403 and the last administrator a 409 (ADR-0030).
       parameters:
         - name: id
           in: path

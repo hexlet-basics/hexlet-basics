@@ -422,8 +422,9 @@ Permission and `mcp.read`/`mcp.write`. Not included: the leads, messages and
 lesson progress (personal data, but about learning and sales, not access), the
 learner-facing reads, and the content operations.
 
-**Self-protection holds, by construction.** The #844 rules are in the handlers,
-and the tool dispatches through the generated server with the Principal's user as
+**Self-protection holds, by construction.** The #844 rules are in the modules
+the handlers write through (ADR-0030), and the tool dispatches through the
+generated server with the Principal's user as
 the authenticated user, so the refusals are the handlers': own Staff Member
 record (403), own account (403), the last administrator (409), the
 administrator flag by a non-administrator (403) and the grants of the caller's

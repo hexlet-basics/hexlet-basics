@@ -22,20 +22,20 @@ func TestApplyToAMissingRoleIsNotFoundAndWritesNothing(t *testing.T) {
 	require.Equal(t, before, db.StaffRoleGrant.Query().CountX(t.Context()))
 }
 
-func TestCheckRefusesAGrantTheContractDoesNotDeclare(t *testing.T) {
+func TestSetRefusesAGrantTheContractDoesNotDeclare(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 	role := fixture.ID(fixture.StaffRoleEditor)
 
-	err := permission.NewPermissions(db, transactor).Check(t.Context(), role, []string{"banners.read", "banners.typo"})
+	err := permission.NewPermissions(db, transactor).Set(t.Context(), administrator(), role, []string{"banners.read", "banners.typo"})
 
 	require.ErrorIs(t, err, permission.ErrUnknownPermission)
 	require.Equal(t, []string{"banners.typo"}, permission.UnknownNames(err))
 }
 
-func TestCheckOfAMissingRoleIsNotFound(t *testing.T) {
+func TestSetOfAMissingRoleIsNotFound(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 
-	err := permission.NewPermissions(db, transactor).Check(t.Context(), 0, []string{"banners.typo"})
+	err := permission.NewPermissions(db, transactor).Set(t.Context(), administrator(), 0, []string{"banners.typo"})
 
 	require.ErrorIs(t, err, domain.ErrNotFound)
 }
@@ -52,4 +52,20 @@ func TestApplyKeepsARetiredGrantTheRoleStillHolds(t *testing.T) {
 	grants, err := db.StaffRoleGrant.Query().Where(staffrolegrant.RoleID(role)).Select(staffrolegrant.FieldPermission).Strings(t.Context())
 	require.NoError(t, err)
 	require.Contains(t, grants, "course_lessons.update")
+}
+
+// administrator is an administrator acting on roles they may hold.
+func administrator() domain.Actor { return domain.Actor{UserID: 0, Administrator: true} }
+
+func TestANonAdministratorCannotChangeTheGrantsOfTheirOwnRole(t *testing.T) {
+	db, transactor := testsupport.NewClientWithTransactor(t)
+	holder := db.StaffMember.Query().FirstX(t.Context())
+	before := db.StaffRoleGrant.Query().CountX(t.Context())
+
+	err := permission.NewPermissions(db, transactor).Set(t.Context(),
+		domain.Actor{UserID: holder.UserID, Administrator: false}, holder.RoleID, []string{"banners.read"})
+
+	require.ErrorIs(t, err, permission.ErrOwnRoleGrants)
+	require.ErrorIs(t, err, domain.ErrForbidden)
+	require.Equal(t, before, db.StaffRoleGrant.Query().CountX(t.Context()))
 }

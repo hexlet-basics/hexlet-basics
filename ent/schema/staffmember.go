@@ -22,15 +22,12 @@ type StaffMember struct {
 	ent.Schema
 }
 
-// Annotations opts the schema into the generated SetInput builders. Rename
-// bridges ent's ID-initialism struct fields (UserID/RoleID) to the contract's
-// UserId/RoleId; allowed_locales maps by default, with the generated cast
-// through pq.StringArray.
+// Annotations generate the admin reads only: a write carries the
+// self-protection rules and goes through permission.StaffEditor.
 func (StaffMember) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		AdminInput{},
 		// The API model embeds the user and the role with its grants.
-		AdminCRUD{Eager: []string{
+		AdminCRUD{ReadOnly: true, Eager: []string{
 			"WithUser()",
 			"WithRole(func(rq *StaffRoleQuery) { rq.WithGrants() })",
 		}},
@@ -39,10 +36,8 @@ func (StaffMember) Annotations() []schema.Annotation {
 
 func (StaffMember) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("user_id").
-			Annotations(AdminInputField{Rename: "UserId"}),
-		field.Int("role_id").
-			Annotations(AdminInputField{Rename: "RoleId"}),
+		field.Int("user_id"),
+		field.Int("role_id"),
 		field.Other("allowed_locales", pq.StringArray{}).
 			SchemaType(map[string]string{dialect.Postgres: varcharArray}),
 	}

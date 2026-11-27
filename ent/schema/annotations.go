@@ -71,6 +71,10 @@ type AdminCRUD struct {
 	// embeds, emitted verbatim after Query(): `WithUser()`,
 	// `WithRole(func(q *StaffRoleQuery) { q.WithPermissions() })`.
 	Eager []string
+	// ReadOnly generates only AdminList and AdminGet: the resource's writes
+	// carry a rule (StaffMember: self-protection) and live in a use-case
+	// module, so no handler can write past it through a generated helper.
+	ReadOnly bool
 	// Search lists the Go field names of the string columns the list's `q`
 	// filter matches, case-insensitively (the human-readable ones: name, slug,
 	// text). Empty means the contract's list has no `q` and AdminList takes

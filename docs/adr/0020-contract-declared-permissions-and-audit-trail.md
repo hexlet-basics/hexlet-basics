@@ -473,9 +473,11 @@ a decision on what may be named.
 
 ## Addendum: self-protection of staff management (#844)
 
-The rules of the Decision section live in the handlers (`self_protection.go`),
-not in the screen or a transport layer, so the website and the MCP server are
-bound by the same code. A refusal is an error returned by the handler, so the
+The rules of the Decision section live in the modules that write (since
+ADR-0030: `account.Editor`, `account.Remover`, `permission.StaffEditor`,
+`permission.Permissions.Set`; they were a separate guard the handlers called
+first), not in the screen or a transport layer, so the website and the MCP
+server are bound by the same code. A refusal is an error returned by the handler, so the
 audit middleware records it as `failed` (the same as any handler error; only the
 security handler's refusals are `forbidden`), with no changes and no entity.
 
@@ -486,8 +488,8 @@ security handler's refusals are `forbidden`), with no changes and no entity.
   can make the same change to the caller's record.
 - **Own account.** `adminDeleteUser` on the caller's own id is refused with 403.
   The profile's own "delete my account" (`DeleteAccount`) is the learner-facing
-  feature, not staff management, and keeps its legacy behaviour; it still
-  refuses the last administrator.
+  feature, not staff management; it still refuses the last administrator. Since
+  ADR-0030 both remove the account the same way.
 - **Last administrator.** Clearing the flag of, or deleting, the last
   administrator is refused with 409, whoever asks (already in place through
   `accounts.EnsureAnotherAdmin`; the refusal now carries a localized `detail`).

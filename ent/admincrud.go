@@ -409,31 +409,6 @@ func (c *StaffMemberClient) AdminGet(ctx context.Context, id int32, conv func(*S
 	return &item, nil
 }
 
-// AdminCreate creates a StaffMember from the contract input.
-func (c *StaffMemberClient) AdminCreate(ctx context.Context, in *api.StaffMemberInput, conv func(*StaffMember) api.StaffMember) (*api.StaffMember, error) {
-	row, err := c.Create().SetInput(in).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return c.AdminGet(ctx, int32(row.ID), conv)
-}
-
-// AdminUpdate updates a StaffMember from the contract input; a missing id
-// is ent's not-found error.
-func (c *StaffMemberClient) AdminUpdate(ctx context.Context, id int32, in *api.StaffMemberInput, conv func(*StaffMember) api.StaffMember) (*api.StaffMember, error) {
-	row, err := c.UpdateOneID(int(id)).SetInput(in).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return c.AdminGet(ctx, int32(row.ID), conv)
-}
-
-// AdminDelete removes a StaffMember by id; a missing id is ent's not-found
-// error.
-func (c *StaffMemberClient) AdminDelete(ctx context.Context, id int32) error {
-	return c.DeleteOneID(int(id)).Exec(ctx)
-}
-
 // adminQuery is the query every admin read of StaffRole starts from: the
 // edges the API model embeds are loaded here once.
 func (c *StaffRoleClient) adminQuery() *StaffRoleQuery {
