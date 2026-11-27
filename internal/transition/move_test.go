@@ -2,11 +2,13 @@ package transition_test
 
 import (
 	"context"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/ent"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/fixture"
 	"hexletbasics/internal/store"
@@ -54,10 +56,12 @@ func TestAMoveOfAMissingRowIsNotFound(t *testing.T) {
 	require.ErrorIs(t, store.ToDomain(err), domain.ErrNotFound)
 }
 
-// Two moves racing on one row: the first holds the row until it commits, and
-// the second, written under the condition that the state is still one it
-// starts from, finds it published and is refused. Without the condition both
-// would pass the check and both would claim draft to published.
+// Two moves racing on one row. The second has read the row as a draft and is
+// about to write while the first, which published it, has not committed yet: a
+// hook holds the second's mutation until the first commits. A check followed
+// by an unconditional write would now pass, and both would claim draft to
+// published. The write carries the condition instead, so the second finds the
+// row published and is refused.
 func TestOfTwoRacingMovesOnlyOneWins(t *testing.T) {
 	t.Parallel()
 	db := store.NewClient(testdb.Clone(t))
@@ -67,6 +71,19 @@ func TestOfTwoRacingMovesOnlyOneWins(t *testing.T) {
 	first, err := db.Tx(ctx)
 	require.NoError(t, err)
 	require.NoError(t, first.BlogPost.MoveState(ctx, id, transition.Publish()))
+
+	reached, committed := make(chan struct{}), make(chan struct{})
+
+	var once sync.Once
+
+	db.BlogPost.Use(func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			once.Do(func() { close(reached) })
+			<-committed
+
+			return next.Mutate(ctx, m)
+		})
+	})
 
 	second := make(chan error, 1)
 
@@ -78,13 +95,14 @@ func TestOfTwoRacingMovesOnlyOneWins(t *testing.T) {
 			return
 		}
 
-		err = tx.BlogPost.MoveState(ctx, id, transition.Publish())
-		second <- err
+		second <- tx.BlogPost.MoveState(ctx, id, transition.Publish())
 
 		_ = tx.Rollback()
 	}()
 
+	<-reached
 	require.NoError(t, first.Commit())
+	close(committed)
 
 	err = <-second
 	illegal, ok := transition.IsIllegal(err)

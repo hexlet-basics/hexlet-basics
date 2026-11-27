@@ -215,6 +215,10 @@ func TestAdminDeleteUserRemovesTheAccount(t *testing.T) {
 	assert.Equal(t, account.StateRemoved, lo.FromPtr(removed.State))
 	assert.Nil(t, removed.Email, "the email is erased, so the address can register again")
 	assert.Nil(t, removed.PasswordDigest)
+
+	err = h.Client.AdminDeleteUser(ctx, api.AdminDeleteUserParams{ID: target.ID})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusNotFound, h.LastStatus(), "a removed account is gone")
 }
 
 func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {

@@ -50,6 +50,15 @@ else: what they may do is read from the account on every request. Not the guest
 progress cookie, which belongs to no account.
 _ru_: сессия · _es_: sesión
 
+**Account Removal**:
+Ending a User's account, by the User from their profile or by an administrator,
+in the same way (ADR-0030): the record stays, in the removed state, with what
+identifies the person erased (names, email, phone, password, linked accounts),
+because their progress, reviews and memberships still point at it. A removed
+account is gone: it cannot sign in, is not found again, and its email can
+register anew. The last administrator cannot be removed.
+_ru_: удаление аккаунта · _es_: eliminación de la cuenta
+
 **Magic Link**:
 An emailed link that signs an existing User in without a password. It lives
 fifteen minutes, is bound to the User's email so it dies if the email changes,

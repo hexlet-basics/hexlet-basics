@@ -60,9 +60,20 @@ func (r *Remover) Remove(ctx context.Context, actor domain.Actor, userID int) er
 	return r.remove(ctx, userID)
 }
 
+// remove erases the account in one transaction. An account that is not there,
+// or already removed, is domain.ErrNotFound: a removed account is gone.
 func (r *Remover) remove(ctx context.Context, userID int) error {
 	return r.store.WithinTx(ctx, func(_ *sql.Tx, tx *ent.Client) error {
-		err := EnsureAnotherAdmin(ctx, tx, userID)
+		active, err := tx.User.Query().Where(user.ID(userID), NotRemoved()).Exist(ctx)
+		if err != nil {
+			return errs.Wrapf(err, "check user")
+		}
+
+		if !active {
+			return domain.ErrNotFound
+		}
+
+		err = EnsureAnotherAdmin(ctx, tx, userID)
 		if err != nil {
 			return err
 		}

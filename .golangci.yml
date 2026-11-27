@@ -252,9 +252,9 @@ linters:
         # ADR-0029: a state column (schema.StateMove) has one writer, the generated
         # Move<Field>, which checks the transition table and writes conditionally.
         # A direct setter would skip both. Tests arrange a state through it (below).
-        - pattern: '^ent\.(Banner|BlogPost|Review|CourseLandingPage)(Create|Update|UpdateOne|Mutation)\.(SetState|SetNillableState)$'
+        - pattern: '^ent\.(Banner|BlogPost|Review|CourseLandingPage)(Create|Update|UpdateOne|Mutation|Upsert|UpsertOne|UpsertBulk)\.(SetState|SetNillableState|UpdateState)$'
           msg: a state moves only through the generated MoveState with a transition (ADR-0029)
-        - pattern: '^ent\.Course(Create|Update|UpdateOne|Mutation)\.(SetReadiness|SetNillableReadiness)$'
+        - pattern: '^ent\.Course(Create|Update|UpdateOne|Mutation|Upsert|UpsertOne|UpsertBulk)\.(SetReadiness|SetNillableReadiness|UpdateReadiness)$'
           msg: a state moves only through the generated MoveReadiness with a transition (ADR-0029)
         # ADR-0018: errors are built with samber/oops, never fmt.Errorf. Tests
         # may use it (see the exclusion below); production code may not.
