@@ -3,20 +3,18 @@ package handlers
 import (
 	"context"
 
-	"hexletbasics/internal/progress"
-
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/apiconv"
+	"hexletbasics/internal/coursepage"
 )
 
 // GetCourse returns everything the public course landing page needs: the
 // course, its landing copy, the lessons of its current version, and where the
 // visitor stands. What the page shows and when it is not found are decided in
-// coursepages; this handler converts the result to the contract.
+// coursepage; this handler converts the result to the contract.
 //
 // Each lesson in the list carries the visitor's standing in it, so the page
 // joins nothing; the course's own standing (Completion, the Next Lesson) travels
-// as the progress payload.
+// as the progress payload. coursepage computes all three.
 //
 // An anonymous request is not an error: it returns the same payload with no
 // enrollment, which is exactly what the page renders for a visitor today.
@@ -26,18 +24,17 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (*ap
 		return nil, err
 	}
 
-	lessons := s.conv.ToLearnerLessons(apiconv.LearnerLessonSources(page.Infos, page.State))
-
 	view := &api.CourseView{
 		Course:      s.conv.ToCourse(page.Course),
 		LandingPage: api.NewNilCourseLandingPage(s.conv.ToCourseLandingPage(page.Landing)),
 		MovedTo:     api.NilString{Null: true},
-		Lessons:     lessons,
-		Modules:     s.conv.ToCourseModules(apiconv.ModuleSources(page.Modules, lessons)),
+		Lessons:     s.conv.ToLearnerLessons(page.Lessons),
+		Modules:     s.conv.ToCourseModules(page.Modules),
 		QnaItems:    s.conv.ToLandingPageQnaItems(page.QnaItems),
 		Enrollment:  api.NilEnrollment{Null: true},
-		Progress:    s.courseProgress(page.State, lessons),
+		Progress:    s.courseProgress(page.Progress),
 	}
+
 	if page.MovedTo != nil {
 		view.MovedTo = api.NewNilString(*page.MovedTo)
 	}
@@ -49,14 +46,12 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (*ap
 	return view, nil
 }
 
-// courseProgress is the visitor's standing as the contract carries it: null for
-// a course with no lessons, where there is nothing to stand in.
-func (s *Server) courseProgress(state *progress.CourseState, lessons []api.LearnerLesson) api.NilCourseProgress {
-	if len(state.Lessons) == 0 {
+// courseProgress is the visitor's standing as the contract carries it: null
+// for a course with no lessons, where there is nothing to stand in.
+func (s *Server) courseProgress(standing *coursepage.CourseProgress) api.NilCourseProgress {
+	if standing == nil {
 		return api.NilCourseProgress{Null: true}
 	}
 
-	return api.NewNilCourseProgress(
-		s.conv.ToCourseProgress(apiconv.CourseProgressSource{State: state, Lessons: lessons}),
-	)
+	return api.NewNilCourseProgress(s.conv.ToCourseProgress(*standing))
 }

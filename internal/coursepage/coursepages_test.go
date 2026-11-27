@@ -58,8 +58,8 @@ func (r *rig) learner(t *testing.T) progress.Learner {
 	}
 }
 
-func lessonSlugs(infos []*ent.CourseLessonTranslation) []string {
-	return lo.Map(infos, func(i *ent.CourseLessonTranslation, _ int) string { return *i.Edges.Lesson.Slug })
+func lessonSlugs(lessons []coursepage.LearnerLesson) []string {
+	return lo.Map(lessons, func(l coursepage.LearnerLesson, _ int) string { return l.Slug })
 }
 
 // The course page of a signed-in learner: the page the slug names, the lessons
@@ -73,9 +73,12 @@ func TestCoursePageOfALearner(t *testing.T) {
 	assert.Equal(t, jsCourse, *page.Course.Slug)
 	assert.Equal(t, enLanding, *page.Landing.Slug)
 	assert.Nil(t, page.MovedTo)
-	assert.Equal(t, []string{firstLesson, secondLesson, thirdLesson}, lessonSlugs(page.Infos))
-	assert.Equal(t, 33, page.State.Completion)
-	assert.True(t, page.State.Lessons[0].Finished)
+	assert.Equal(t, []string{firstLesson, secondLesson, thirdLesson}, lessonSlugs(page.Lessons))
+	require.NotNil(t, page.Progress)
+	assert.Equal(t, 33, page.Progress.Completion)
+	assert.True(t, page.Lessons[0].Finished)
+	require.NotNil(t, page.Progress.NextLesson, "the learner resumes at the first unfinished lesson")
+	assert.Equal(t, secondLesson, page.Progress.NextLesson.Slug)
 	require.NotNil(t, page.Enrollment)
 	assert.Equal(t, page.Course.ID, page.Enrollment.CourseID)
 	assert.NotEmpty(t, page.Modules)
@@ -94,8 +97,9 @@ func TestCoursePageOfAGuestHasNoEnrollment(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Nil(t, page.Enrollment)
-	assert.Equal(t, 0, page.State.Completion)
-	assert.Len(t, page.Infos, 3)
+	require.NotNil(t, page.Progress)
+	assert.Equal(t, 0, page.Progress.Completion)
+	assert.Len(t, page.Lessons, 3)
 }
 
 // One ordering: the lessons follow the positions the progress state reports, so
@@ -118,9 +122,9 @@ func TestCoursePageOrdersLessonsByTheProgressPositions(t *testing.T) {
 	}, "en", enLanding)
 	require.NoError(t, err)
 
-	assert.Equal(t, []string{secondLesson, thirdLesson, firstLesson}, lessonSlugs(page.Infos))
-	assert.Equal(t, []string{secondLesson, thirdLesson, firstLesson},
-		lo.Map(page.State.Lessons, func(l progress.LessonState, _ int) string { return l.Slug }))
+	assert.Equal(t, []string{secondLesson, thirdLesson, firstLesson}, lessonSlugs(page.Lessons))
+	assert.IsIncreasing(t, lo.Map(page.Lessons, func(l coursepage.LearnerLesson, _ int) int { return l.Position }),
+		"each lesson carries the position it is listed by")
 }
 
 func TestCoursePageIsNotFoundForAnUnknownOrForeignSlug(t *testing.T) {
@@ -209,8 +213,13 @@ func TestLessonPage(t *testing.T) {
 		page.SourceURL)
 	require.NotNil(t, page.Landing)
 	assert.Equal(t, enLanding, *page.Landing.Slug)
-	assert.Equal(t, []string{firstLesson, secondLesson, thirdLesson}, lessonSlugs(page.Infos))
-	assert.Equal(t, 33, page.State.Completion)
+	assert.Equal(t, []string{firstLesson, secondLesson, thirdLesson}, lessonSlugs(page.Lessons))
+	require.NotNil(t, page.Progress)
+	assert.Equal(t, 33, page.Progress.Completion)
+	require.NotNil(t, page.Adjacent.Previous)
+	require.NotNil(t, page.Adjacent.Next)
+	assert.Equal(t, firstLesson, page.Adjacent.Previous.Slug)
+	assert.Equal(t, thirdLesson, page.Adjacent.Next.Slug)
 }
 
 func TestLessonPageWithoutALandingPageHasNone(t *testing.T) {

@@ -40,13 +40,13 @@ func NewGitFetcher(baseURL, token string) *GitFetcher {
 // RepoURL is the clone URL for a course slug, exposed so callers (webhook repo
 // matching, logging) can reason about the same convention the fetcher uses.
 func (f *GitFetcher) RepoURL(slug string) string {
-	return f.baseURL + "/exercises-" + slug + ".git"
+	return f.baseURL + "/" + RepositoryName(slug) + ".git"
 }
 
 // Fetch shallow-clones the course repo into a fresh temp dir. The cleanup removes
 // that dir; callers must always defer it, including on a later parse error.
 func (f *GitFetcher) Fetch(ctx context.Context, slug string) (string, func(), error) {
-	dir, err := os.MkdirTemp("", "exercises-"+slug+"-")
+	dir, err := os.MkdirTemp("", RepositoryName(slug)+"-")
 	if err != nil {
 		return "", func() {}, oops.Wrapf(err, "create temp dir for %s", slug)
 	}

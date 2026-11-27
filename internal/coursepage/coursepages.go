@@ -32,17 +32,11 @@ import (
 	"hexletbasics/internal/transition"
 )
 
-// progressReader is what the pages need from the progress module: where a
-// learner stands in a course, in the order the course gives its lessons.
-type progressReader interface {
-	CourseState(ctx context.Context, learner progress.Learner, courseID int) (*progress.CourseState, error)
-}
-
 // Pages reads the course page and the lesson page.
 type Pages struct {
 	db       *ent.Client
 	catalog  *landingpage.Catalog
-	progress progressReader
+	progress *progress.Progress
 	// sourceBase is the content organisation under which each course's exercises
 	// repository lives.
 	sourceBase string
@@ -51,7 +45,7 @@ type Pages struct {
 // New builds the reader. The catalog owns the main-page rule and the progress
 // tracker owns the order of a course's lessons, so the page and the learner's
 // standing cannot drift apart.
-func New(db *ent.Client, catalog *landingpage.Catalog, tracker progressReader, sourceBase string) *Pages {
+func New(db *ent.Client, catalog *landingpage.Catalog, tracker *progress.Progress, sourceBase string) *Pages {
 	return &Pages{db: db, catalog: catalog, progress: tracker, sourceBase: sourceBase}
 }
 
@@ -63,14 +57,13 @@ type CoursePage struct {
 	Landing *ent.CourseLandingPage
 	// MovedTo is the slug an archived Landing moved to; nil for a live page.
 	MovedTo *string
-	// State is where the visitor stands; a guest and a learner have the same
-	// shape.
-	State *progress.CourseState
-	// Infos are the lessons of the current version in the locale, each with its
-	// Lesson loaded, in course order.
-	Infos []*ent.CourseLessonTranslation
-	// Modules are the current version's modules in the locale.
-	Modules  []*ent.CourseModuleTranslation
+	// Lessons are the current Version's Learner Lessons in the locale, in course
+	// order: a guest and a learner have the same shape.
+	Lessons []LearnerLesson
+	// Modules are the current Version's modules in the locale, with their lessons.
+	Modules []Module
+	// Progress is where the visitor stands; nil for a course with no lessons.
+	Progress *CourseProgress
 	QnaItems []*ent.LandingPageQnaItem
 	// Enrollment is nil when the visitor has not started the course (a guest, or
 	// a learner who has not begun): the absence of a record, not a state.
@@ -137,13 +130,15 @@ func (p *Pages) Course(ctx context.Context, learner progress.Learner, locale, sl
 		return nil, errs.Wrapf(err, "load landing page questions")
 	}
 
+	lessons := learnerLessons(infos, state)
+
 	page := &CoursePage{
 		Course:     crs,
 		Landing:    landing,
 		MovedTo:    movedTo,
-		State:      state,
-		Infos:      infos,
-		Modules:    modules,
+		Lessons:    lessons,
+		Modules:    modulesOf(modules, lessons),
+		Progress:   courseProgressOf(state, lessons),
 		QnaItems:   qna,
 		Enrollment: nil,
 	}
@@ -230,6 +225,7 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 	}
 
 	version := translation.Edges.Version
+	lessons := learnerLessons(infos, state)
 
 	return &LessonPage{
 		Course:      crs,
@@ -238,8 +234,9 @@ func (p *Pages) Lesson(ctx context.Context, learner progress.Learner, locale, co
 		Translation: translation,
 		SourceURL:   lessonSourceURL(p.sourceBase, version.PathToCode, locale),
 		Landing:     mains[crs.ID],
-		State:       state,
-		Infos:       infos,
+		Lessons:     lessons,
+		Adjacent:    adjacentOf(lessonSlug, lessons),
+		Progress:    courseProgressOf(state, lessons),
 	}, nil
 }
 
@@ -313,9 +310,12 @@ type LessonPage struct {
 	// Landing is the course's main landing page in the locale, which titles the
 	// page; nil when it has none a visitor may open.
 	Landing *ent.CourseLandingPage
-	State   *progress.CourseState
-	// Infos are the course's lessons in course order, as on the course page.
-	Infos []*ent.CourseLessonTranslation
+	// Lessons are the course's Learner Lessons in course order, as on the
+	// course page, and Adjacent the two on either side of this one.
+	Lessons  []LearnerLesson
+	Adjacent AdjacentLessons
+	// Progress is where the visitor stands; nil for a course with no lessons.
+	Progress *CourseProgress
 }
 
 // lessonInfos is the translations of the current version's lessons in locale,

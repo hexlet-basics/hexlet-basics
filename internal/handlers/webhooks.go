@@ -5,10 +5,10 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/google/go-github/v89/github"
 
+	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/versionbuild"
@@ -18,10 +18,6 @@ import (
 // the cap stops an oversized body from being buffered whole (also the ceiling for
 // the HMAC read, which must see the exact bytes GitHub signed).
 const maxWebhookBytes = 5 << 20 // 5 MiB
-
-// coursePrefix is the fixed prefix on every exercises repo name; stripping it
-// yields the course slug (the same convention the git fetcher clones by).
-const coursePrefix = "exercises-"
 
 // GitHubWebhookHandler receives GitHub `workflow_run` webhooks and triggers a
 // course-version build when a course's exercises repo finishes CI successfully on
@@ -146,8 +142,8 @@ func (h *GitHubWebhookHandler) buildTargetSlug(event *github.WorkflowRunEvent) (
 
 	name := repo.GetName()
 
-	slug, ok := strings.CutPrefix(name, coursePrefix)
-	if !ok || slug == "" {
+	slug, ok := courseloader.CourseOfRepository(name)
+	if !ok {
 		return "", false
 	}
 

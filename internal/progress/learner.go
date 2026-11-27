@@ -7,6 +7,7 @@ import (
 
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/internal/store"
 )
 
 // StateNotStarted is the condition of a learner with no record: the glossary's
@@ -38,14 +39,14 @@ type LearnerLesson struct {
 
 // LearnerCourse reads where the user stands in the Course with this slug. The
 // subject is always the explicit user id; there is no guest variant, which is
-// what a bearer token's user is. An unknown slug is an ent.NotFoundError.
+// what a bearer token's user is. An unknown slug is domain.ErrNotFound.
 //
 // It builds on CourseStates, so Completion and the Next Lesson are the numbers
 // the course page and the dashboard show; it only adds the Started rows.
 func (p *Progress) LearnerCourse(ctx context.Context, userID int, courseSlug string) (*LearnerCourse, error) {
 	crs, err := p.db.Course.Query().Where(course.SlugEQ(courseSlug)).Only(ctx)
 	if err != nil {
-		return nil, errs.With("course_slug", courseSlug).Wrapf(err, "load course")
+		return nil, store.ToDomain(errs.With("course_slug", courseSlug).Wrapf(err, "load course"))
 	}
 
 	states, err := p.CourseStates(ctx, userID, []int{crs.ID})

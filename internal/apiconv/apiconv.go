@@ -22,8 +22,9 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/blog"
+	"hexletbasics/internal/courseloader"
+	"hexletbasics/internal/coursepage"
 	"hexletbasics/internal/dashboard"
-	"hexletbasics/internal/progress"
 	"hexletbasics/internal/transition"
 )
 
@@ -53,6 +54,7 @@ import (
 // goverter:extend EnrollmentStateFromPtr
 // goverter:extend LocaleFromPtr
 // goverter:extend NilStringFromEmpty
+// goverter:extend NilLessonRefOf
 type Converter interface { //nolint:interfacebloat // goverter generates the implementation of this one interface, one method per mapping
 	ToCatalogItems(source []*ent.CourseLandingPage) []api.CourseCatalogItem
 
@@ -246,12 +248,11 @@ type Converter interface { //nolint:interfacebloat // goverter generates the imp
 	// goverter:map CourseID CourseId
 	ToEnrollment(source *ent.Enrollment) api.Enrollment
 
-	// The computed course state. The Next Lesson is named from the lessons of the
-	// visitor's locale (nextLessonOf); the state knows only its slug.
-	// goverter:map State.State State
-	// goverter:map State.Completion Completion
-	// goverter:map . NextLesson | nextLessonOf
-	ToCourseProgress(source CourseProgressSource) api.CourseProgress
+	// Where the visitor stands, as coursepage computed it: the Next Lesson is
+	// already a Learner Lesson of the locale, or nil.
+	ToCourseProgress(source coursepage.CourseProgress) api.CourseProgress
+
+	ToAdjacentLessons(source coursepage.AdjacentLessons) api.AdjacentLessons
 
 	// The dashboard names the Next Lesson itself (its id and name came from the
 	// request locale's translations), so its progress is a different projection.
@@ -265,24 +266,15 @@ type Converter interface { //nolint:interfacebloat // goverter generates the imp
 
 	ToDashboardCourses(source []dashboard.Course) []api.DashboardCourse
 
-	// A lesson with the visitor's standing in it: the checkmark travels with the
-	// row, so no screen joins two lists. LearnerLessonSources does the join.
-	// goverter:map Info.CourseLessonID ID
-	// goverter:map Info.Edges.Lesson.Slug Slug
-	// goverter:map Info.Name Name
-	// goverter:map Info.Description Description
-	// goverter:map Standing.Position Position
-	// goverter:map Standing.Finished Finished
-	ToLearnerLesson(source LearnerLessonSource) api.LearnerLesson
+	// A lesson with the visitor's standing in it, joined by coursepage: the
+	// checkmark travels with the row, so no screen joins two lists.
+	ToLearnerLesson(source coursepage.LearnerLesson) api.LearnerLesson
 
-	ToLearnerLessons(source []LearnerLessonSource) []api.LearnerLesson
+	ToLearnerLessons(source []coursepage.LearnerLesson) []api.LearnerLesson
 
-	// goverter:map Row.Edges.Version.ModuleID ID
-	// goverter:map Row.Name Name
-	// goverter:map Row.Description Description
-	ToCourseModule(source ModuleSource) api.CourseModule
+	ToCourseModule(source coursepage.Module) api.CourseModule
 
-	ToCourseModules(source []ModuleSource) []api.CourseModule
+	ToCourseModules(source []coursepage.Module) []api.CourseModule
 
 	// The player payload, assembled from the rows in LessonContent. versionId and
 	// version both carry the Lesson Version id, as the legacy serializer emitted
@@ -311,75 +303,6 @@ type Converter interface { //nolint:interfacebloat // goverter generates the imp
 	ToCourseLesson(source LessonContent) api.CourseLesson
 }
 
-// CourseProgressSource is what a course's progress is computed from: the state
-// and the lessons of the visitor's locale, which name the Next Lesson.
-type CourseProgressSource struct {
-	State   *progress.CourseState
-	Lessons []api.LearnerLesson
-}
-
-// LearnerLessonSource is one lesson's translation with the visitor's standing
-// in it.
-type LearnerLessonSource struct {
-	Info     *ent.CourseLessonTranslation
-	Standing progress.LessonState
-}
-
-// LearnerLessonSources joins the lessons of a Version in one locale with the
-// visitor's standing in each. infos are the translations in course order, each
-// with its lesson loaded (WithLesson).
-//
-// A lesson the state does not know has no Position and is not finished: the
-// state and the infos read the same Version, so that is a lesson added since
-// the state was computed, not a case to fail on.
-func LearnerLessonSources(infos []*ent.CourseLessonTranslation, state *progress.CourseState) []LearnerLessonSource {
-	standing := make(map[string]progress.LessonState, len(state.Lessons))
-	for _, lesson := range state.Lessons {
-		standing[lesson.Slug] = lesson
-	}
-
-	return lo.Map(infos, func(info *ent.CourseLessonTranslation, _ int) LearnerLessonSource {
-		slug := ""
-		if info.Edges.Lesson != nil {
-			slug = lo.FromPtr(info.Edges.Lesson.Slug)
-		}
-
-		return LearnerLessonSource{Info: info, Standing: standing[slug]}
-	})
-}
-
-// ModuleSource is a module's translation with the lessons it lists.
-type ModuleSource struct {
-	Row     *ent.CourseModuleTranslation
-	Lessons []api.LearnerLesson
-}
-
-// ModuleSources assigns each module its lessons. rows are the module
-// translations with their lesson versions and lessons loaded (WithVersion,
-// WithLessonVersions, WithLesson), lessons already in course order; lessons
-// are the Version's LearnerLessons, from which each module takes its own. A
-// module's lesson that is not translated into the locale is simply not listed,
-// as in the flat list.
-func ModuleSources(rows []*ent.CourseModuleTranslation, lessons []api.LearnerLesson) []ModuleSource {
-	bySlug := lo.KeyBy(lessons, func(l api.LearnerLesson) string { return l.Slug })
-
-	return lo.Map(rows, func(row *ent.CourseModuleTranslation, _ int) ModuleSource {
-		return ModuleSource{
-			Row: row,
-			Lessons: lo.FilterMap(moduleLessonSlugs(row), func(slug string, _ int) (api.LearnerLesson, bool) {
-				lesson, ok := bySlug[slug]
-
-				return lesson, ok
-			}),
-		}
-	})
-}
-
-// nextLessonOf names the Next Lesson of a course from its lessons.
-func nextLessonOf(source CourseProgressSource) api.NilLessonRef {
-	return NextLessonRef(source.State.NextLessonSlug, source.Lessons)
-}
-
 // dashboardNextLesson is null when the dashboard found no Next Lesson in the
 // locale, else the reference the dashboard resolved.
 func dashboardNextLesson(c dashboard.Course) api.NilLessonRef {
@@ -388,23 +311,6 @@ func dashboardNextLesson(c dashboard.Course) api.NilLessonRef {
 	}
 
 	return NamedLessonRef(c.State.NextLessonSlug, c.NextLesson.ID, &c.NextLesson.Name)
-}
-
-// NextLessonRef names the Next Lesson from the lessons of the visitor's locale.
-// Null when there is none, and when the lessons do not contain it: a lesson with
-// no translation in the locale has no page there to point at.
-func NextLessonRef(slug *string, lessons []api.LearnerLesson) api.NilLessonRef {
-	if slug == nil {
-		return api.NilLessonRef{Null: true}
-	}
-
-	for _, lesson := range lessons {
-		if lesson.Slug == *slug {
-			return api.NewNilLessonRef(lessonRef(lesson))
-		}
-	}
-
-	return api.NilLessonRef{Null: true}
 }
 
 // NamedLessonRef is a reference to the lesson with slug and id, called name, for
@@ -417,36 +323,18 @@ func NamedLessonRef(slug *string, id int, name *string) api.NilLessonRef {
 	return api.NewNilLessonRef(api.LessonRef{ID: Int32FromInt(id), Slug: *slug, Name: NilStringFromPtr(name)})
 }
 
-func lessonRef(l api.LearnerLesson) api.LessonRef {
-	return api.LessonRef{ID: l.ID, Slug: l.Slug, Name: l.Name}
-}
-
-// AdjacentLessons are the lessons on either side of the one with slug, in the
-// order lessons are given: course order, whatever the learner has finished.
-// Either is null at the edge of the course.
-func AdjacentLessons(slug string, lessons []api.LearnerLesson) api.AdjacentLessons {
-	adjacent := api.AdjacentLessons{
-		Previous: api.NilLessonRef{Null: true},
-		Next:     api.NilLessonRef{Null: true},
+// NilLessonRefOf is a reference to a Learner Lesson, null for none: the Next
+// Lesson and the Adjacent Lessons as the contract carries them.
+func NilLessonRefOf(lesson *coursepage.LearnerLesson) api.NilLessonRef {
+	if lesson == nil {
+		return api.NilLessonRef{Null: true}
 	}
 
-	index := lo.IndexOf(lo.Map(lessons, func(l api.LearnerLesson, _ int) string { return l.Slug }), slug)
-	if index < 0 {
-		return adjacent
-	}
-
-	ref := func(l api.LearnerLesson) api.NilLessonRef {
-		return api.NewNilLessonRef(lessonRef(l))
-	}
-	if index > 0 {
-		adjacent.Previous = ref(lessons[index-1]) //nolint:gosec // G602: index is in [0, len) here, IndexOf returned it and the index > 0 guard above bounds it below
-	}
-
-	if index < len(lessons)-1 {
-		adjacent.Next = ref(lessons[index+1])
-	}
-
-	return adjacent
+	return api.NewNilLessonRef(api.LessonRef{
+		ID:   Int32FromInt(lesson.ID),
+		Slug: lesson.Slug,
+		Name: NilStringFromPtr(lesson.Name),
+	})
 }
 
 // LessonContent is one Lesson as the player needs it, drawn from the three
@@ -594,23 +482,6 @@ func EnrollmentStateFromPtr(v *string) api.EnrollmentState {
 	}
 
 	return api.EnrollmentState(*v)
-}
-
-// moduleLessonSlugs lists a module's lessons by slug, in the order the query
-// loaded its lesson versions. A lesson with no slug has no URL to link, so it
-// is left out rather than listed as an empty string.
-func moduleLessonSlugs(source *ent.CourseModuleTranslation) []string {
-	if source == nil || source.Edges.Version == nil {
-		return []string{}
-	}
-
-	return lo.FilterMap(source.Edges.Version.Edges.LessonVersions, func(v *ent.CourseLessonVersion, _ int) (string, bool) {
-		if v.Edges.Lesson == nil || v.Edges.Lesson.Slug == nil {
-			return "", false
-		}
-
-		return *v.Edges.Lesson.Slug, true
-	})
 }
 
 // lessonProgressLessonName reads the first eager-loaded localized info. The
@@ -862,7 +733,7 @@ func CourseVersionFromEnt(value *ent.CourseVersion) api.CourseVersion {
 // Language#repository_url. It is always present (the legacy method never returns
 // nil), so the nullable API field carries a value.
 func repositoryURL(c *ent.Course) api.NilString {
-	return api.NewNilString("https://github.com/hexlet-basics/exercises-" + lo.FromPtr(c.Slug))
+	return api.NewNilString("https://github.com/hexlet-basics/" + courseloader.RepositoryName(lo.FromPtr(c.Slug)))
 }
 
 // hexletProgramLandingPage applies the legacy `.presence` semantics: a blank
