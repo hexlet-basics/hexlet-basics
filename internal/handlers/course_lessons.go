@@ -11,8 +11,9 @@ import (
 
 // These three admin lists (legacy `admin/course_lessons`,
 // `admin/lesson_progress`, `admin/course_lesson_reviews`) read the
-// lesson/version-info graph and are READ-ONLY (index only). The courselessons
-// module owns what each lists; apiconv maps the graph it returns to the API
+// lesson/version-info graph and are READ-ONLY (index only). The module of
+// each concept owns what it lists (curriculum the lessons, progress the Lesson
+// Progress records, lessonreview the reviews); apiconv maps the rows to the API
 // types.
 //
 // Locale: legacy filters these by the request's `I18n.locale` (the admin UI
@@ -41,7 +42,7 @@ func (s *Server) AdminListLessonProgress(ctx context.Context, params api.AdminLi
 
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.LessonProgress, int, error) {
-			return s.lessonDirectory.Progress(ctx, locale, page)
+			return s.progress.Records(ctx, locale, page)
 		},
 		s.conv.ToLessonProgressList,
 		func(items []api.LessonProgress, total, page, perPage int32) *api.LessonProgressPage {
@@ -57,7 +58,7 @@ func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.Ad
 
 	return listFrom(ctx, params.Page, params.PerPage,
 		func(ctx context.Context, page domain.Page) ([]*ent.CourseLessonReview, int, error) {
-			return s.lessonDirectory.Reviews(ctx, locale, page)
+			return s.lessonReviewDirectory.List(ctx, locale, page)
 		},
 		s.conv.ToCourseLessonReviews,
 		func(items []api.CourseLessonReview, total, page, perPage int32) *api.CourseLessonReviewPage {

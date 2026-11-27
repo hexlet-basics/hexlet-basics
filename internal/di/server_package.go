@@ -73,43 +73,44 @@ const (
 // handlerServices is what handlers.Server is built from, resolved by concrete
 // type, the same types handlers.Deps holds.
 type handlerServices struct {
-	DB                *ent.Client                `do:""`
-	Config            *config.Server             `do:""`
-	Starter           *versionbuild.Starter      `do:""`
-	Jobs              *jobs.Enqueuer             `do:""`
-	RelatedCoursesSet *relatedcourse.Replacer    `do:""`
-	Progress          *progress.Progress         `do:""`
-	Assets            *assetstore.Store          `do:""`
-	Sessions          *auth.Authenticator        `do:""`
-	SignIn            *signin.Gate               `do:""`
-	Remover           *account.Remover           `do:""`
-	UserEditor        *account.Editor            `do:""`
-	UserDirectory     *account.Directory         `do:""`
-	Events            *events.Publisher          `do:""`
-	Leads             *leadcapture.Recorder      `do:""`
-	Books             *book.Recorder             `do:""`
-	I18n              *localization.Translator   `do:""`
-	Errors            *handlers.APIErrorHandler  `do:""`
-	YandexFeed        *feed.Yandex               `do:""`
-	Assistant         *assistant.Chat            `do:""`
-	PostRemover       *blog.Remover              `do:""`
-	Permissions       *permission.Permissions    `do:""`
-	StaffEditor       *permission.StaffEditor    `do:""`
-	Dashboard         *dashboard.Dashboard       `do:""`
-	Sitemap           *sitemap.Sitemap           `do:""`
-	Search            *search.Catalogue          `do:""`
-	LessonReviews     *lessonreview.Scheduler    `do:""`
-	RelatedSuggester  *relatedcourse.Scheduler   `do:""`
-	LandingPageQna    *qnaitem.LandingPage       `do:""`
-	CategoryQna       *qnaitem.Category          `do:""`
-	PostEditor        *blog.Editor               `do:""`
-	ReviewDirectory   *coursereview.Directory    `do:""`
-	CourseDirectory   *catalog.CourseDirectory   `do:""`
-	LeadDirectory     *leadcapture.Directory     `do:""`
-	MessageDirectory  *assistant.Directory       `do:""`
-	CategoryDirectory *catalog.CategoryDirectory `do:""`
-	BannerDirectory   *sitebanner.Directory      `do:""`
-	LessonDirectory   *curriculum.Directory      `do:""`
+	DB                    *ent.Client                `do:""`
+	Config                *config.Server             `do:""`
+	Starter               *versionbuild.Starter      `do:""`
+	Jobs                  *jobs.Enqueuer             `do:""`
+	RelatedCoursesSet     *relatedcourse.Replacer    `do:""`
+	Progress              *progress.Progress         `do:""`
+	Assets                *assetstore.Store          `do:""`
+	Sessions              *auth.Authenticator        `do:""`
+	SignIn                *signin.Gate               `do:""`
+	Remover               *account.Remover           `do:""`
+	UserEditor            *account.Editor            `do:""`
+	UserDirectory         *account.Directory         `do:""`
+	Events                *events.Publisher          `do:""`
+	Leads                 *leadcapture.Recorder      `do:""`
+	Books                 *book.Recorder             `do:""`
+	I18n                  *localization.Translator   `do:""`
+	Errors                *handlers.APIErrorHandler  `do:""`
+	YandexFeed            *feed.Yandex               `do:""`
+	Assistant             *assistant.Chat            `do:""`
+	PostRemover           *blog.Remover              `do:""`
+	Permissions           *permission.Permissions    `do:""`
+	StaffEditor           *permission.StaffEditor    `do:""`
+	Dashboard             *dashboard.Dashboard       `do:""`
+	Sitemap               *sitemap.Sitemap           `do:""`
+	Search                *search.Catalogue          `do:""`
+	LessonReviews         *lessonreview.Scheduler    `do:""`
+	RelatedSuggester      *relatedcourse.Scheduler   `do:""`
+	LandingPageQna        *qnaitem.LandingPage       `do:""`
+	CategoryQna           *qnaitem.Category          `do:""`
+	PostEditor            *blog.Editor               `do:""`
+	ReviewDirectory       *coursereview.Directory    `do:""`
+	CourseDirectory       *catalog.CourseDirectory   `do:""`
+	LeadDirectory         *leadcapture.Directory     `do:""`
+	MessageDirectory      *assistant.Directory       `do:""`
+	CategoryDirectory     *catalog.CategoryDirectory `do:""`
+	BannerDirectory       *sitebanner.Directory      `do:""`
+	LessonDirectory       *curriculum.Directory      `do:""`
+	LessonReviewDirectory *lessonreview.Directory    `do:""`
 }
 
 var serverPackage = do.Package(
@@ -285,6 +286,14 @@ var serverPackage = do.Package(
 		}
 
 		return curriculum.NewDirectory(db), nil
+	}),
+	do.Lazy[*lessonreview.Directory](func(i do.Injector) (*lessonreview.Directory, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+
+		return lessonreview.NewDirectory(db), nil
 	}),
 	do.Lazy[*sitebanner.Directory](func(i do.Injector) (*sitebanner.Directory, error) {
 		db, err := do.Invoke[*ent.Client](i)
@@ -524,43 +533,44 @@ var serverPackage = do.Package(
 		}
 
 		return handlers.NewServer(handlers.Deps{
-			OAuth:             consents,
-			DB:                services.DB,
-			Settings:          handlerSettings(services.Config),
-			Starter:           services.Starter,
-			Jobs:              services.Jobs,
-			RelatedCoursesSet: services.RelatedCoursesSet,
-			Progress:          services.Progress,
-			Assets:            services.Assets,
-			Sessions:          services.Sessions,
-			SignIn:            services.SignIn,
-			Remover:           services.Remover,
-			UserEditor:        services.UserEditor,
-			UserDirectory:     services.UserDirectory,
-			Leads:             services.Leads,
-			Books:             services.Books,
-			I18n:              services.I18n,
-			Errors:            services.Errors,
-			YandexFeed:        services.YandexFeed,
-			Assistant:         services.Assistant,
-			PostRemover:       services.PostRemover,
-			Permissions:       services.Permissions,
-			StaffEditor:       services.StaffEditor,
-			Dashboard:         services.Dashboard,
-			Sitemap:           services.Sitemap,
-			Search:            services.Search,
-			LessonReviews:     services.LessonReviews,
-			RelatedSuggester:  services.RelatedSuggester,
-			LandingPageQna:    services.LandingPageQna,
-			CategoryQna:       services.CategoryQna,
-			PostEditor:        services.PostEditor,
-			ReviewDirectory:   services.ReviewDirectory,
-			CourseDirectory:   services.CourseDirectory,
-			LeadDirectory:     services.LeadDirectory,
-			MessageDirectory:  services.MessageDirectory,
-			CategoryDirectory: services.CategoryDirectory,
-			BannerDirectory:   services.BannerDirectory,
-			LessonDirectory:   services.LessonDirectory,
+			OAuth:                 consents,
+			DB:                    services.DB,
+			Settings:              handlerSettings(services.Config),
+			Starter:               services.Starter,
+			Jobs:                  services.Jobs,
+			RelatedCoursesSet:     services.RelatedCoursesSet,
+			Progress:              services.Progress,
+			Assets:                services.Assets,
+			Sessions:              services.Sessions,
+			SignIn:                services.SignIn,
+			Remover:               services.Remover,
+			UserEditor:            services.UserEditor,
+			UserDirectory:         services.UserDirectory,
+			Leads:                 services.Leads,
+			Books:                 services.Books,
+			I18n:                  services.I18n,
+			Errors:                services.Errors,
+			YandexFeed:            services.YandexFeed,
+			Assistant:             services.Assistant,
+			PostRemover:           services.PostRemover,
+			Permissions:           services.Permissions,
+			StaffEditor:           services.StaffEditor,
+			Dashboard:             services.Dashboard,
+			Sitemap:               services.Sitemap,
+			Search:                services.Search,
+			LessonReviews:         services.LessonReviews,
+			RelatedSuggester:      services.RelatedSuggester,
+			LandingPageQna:        services.LandingPageQna,
+			CategoryQna:           services.CategoryQna,
+			PostEditor:            services.PostEditor,
+			ReviewDirectory:       services.ReviewDirectory,
+			CourseDirectory:       services.CourseDirectory,
+			LeadDirectory:         services.LeadDirectory,
+			MessageDirectory:      services.MessageDirectory,
+			CategoryDirectory:     services.CategoryDirectory,
+			BannerDirectory:       services.BannerDirectory,
+			LessonDirectory:       services.LessonDirectory,
+			LessonReviewDirectory: services.LessonReviewDirectory,
 		}), nil
 	}),
 	// The in-lesson assistant answers inside the request (a stream, no job), so

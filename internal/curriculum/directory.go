@@ -6,18 +6,17 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/courselesson"
-	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
-	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/domain"
 	"hexletbasics/internal/landingpage"
 	"hexletbasics/internal/store"
 )
 
-// Directory is the read side of the lesson graph. Every list is in the locale it
-// is asked for: the admin's interface language, which is what legacy filtered
-// these pages by.
+// Directory is the read side of the lesson graph: the administrators' list of
+// lessons, in the locale it is asked for (the admin's interface language, which
+// is what legacy filtered the page by). The Lesson Progress records are listed
+// by progress and the AI lesson reviews by lessonreview, each with its concept.
 type Directory struct {
 	db *ent.Client
 }
@@ -59,39 +58,4 @@ func (d *Directory) Lessons(ctx context.Context, locale, search string, page dom
 	}
 
 	return store.Paged(ctx, query, page)
-}
-
-// Progress lists learners' per-lesson progress rows, newest first (legacy
-// `admin/lesson_progress`). The course and the lesson, with its translation in
-// the locale, come with each row.
-func (d *Directory) Progress(ctx context.Context, locale string, page domain.Page) ([]*ent.LessonProgress, int, error) {
-	return store.Paged(ctx,
-		d.db.LessonProgress.Query().
-			WithCourse().
-			WithLesson(func(q *ent.CourseLessonQuery) {
-				q.WithInfos(func(q *ent.CourseLessonTranslationQuery) {
-					q.Where(courselessontranslation.LocaleEQ(locale)).
-						Order(ent.Asc(courselessontranslation.FieldID))
-				})
-			}).
-			Order(ent.Desc(lessonprogress.FieldID)),
-		page)
-}
-
-// Reviews lists the AI lesson reviews of the locale that have a summary, newest
-// first (legacy `admin/course_lesson_reviews`, `where(locale:).with_summary`).
-// A review with an empty summary marks a lesson no student asked about; legacy
-// skips it, and it must not inflate the total, so the filter is on the one query
-// the count and the page share.
-func (d *Directory) Reviews(ctx context.Context, locale string, page domain.Page) ([]*ent.CourseLessonReview, int, error) {
-	return store.Paged(ctx,
-		d.db.CourseLessonReview.Query().
-			Where(
-				courselessonreview.LocaleEQ(locale),
-				courselessonreview.SummaryNEQ(""),
-			).
-			WithCourse().
-			WithLesson().
-			Order(ent.Desc(courselessonreview.FieldID)),
-		page)
 }

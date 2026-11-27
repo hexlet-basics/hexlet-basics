@@ -123,6 +123,8 @@ type Server struct {
 	categoryDirectory *catalog.CategoryDirectory
 	bannerDirectory   *sitebanner.Directory
 	lessonDirectory   *curriculum.Directory
+	// lessonReviewDirectory lists the AI lesson reviews.
+	lessonReviewDirectory *lessonreview.Directory
 	// oauth serves the consent screen of the OAuth server; nil while it is off.
 	oauth *oauthserver.Server
 }
@@ -134,43 +136,44 @@ type Server struct {
 // auth router) simply leaves its field zero instead of passing a labelled nil.
 // Plain fields, no DI tags, so the handlers package stays injector-agnostic.
 type Deps struct {
-	DB                *ent.Client
-	Settings          Settings
-	Starter           *versionbuild.Starter
-	Jobs              *jobs.Enqueuer
-	RelatedCoursesSet *relatedcourse.Replacer
-	Progress          *progress.Progress
-	Assets            *assetstore.Store
-	Sessions          *auth.Authenticator
-	SignIn            *signin.Gate
-	Remover           *account.Remover
-	UserEditor        *account.Editor
-	UserDirectory     *account.Directory
-	Leads             *leadcapture.Recorder
-	Books             *book.Recorder
-	I18n              *localization.Translator
-	Errors            *APIErrorHandler
-	YandexFeed        *feed.Yandex
-	Assistant         *assistant.Chat
-	PostRemover       *blog.Remover
-	Permissions       *permission.Permissions
-	StaffEditor       *permission.StaffEditor
-	Dashboard         *dashboard.Dashboard
-	Sitemap           *sitemap.Sitemap
-	Search            *search.Catalogue
-	LessonReviews     *lessonreview.Scheduler
-	RelatedSuggester  *relatedcourse.Scheduler
-	LandingPageQna    *qnaitem.LandingPage
-	CategoryQna       *qnaitem.Category
-	PostEditor        *blog.Editor
-	ReviewDirectory   *coursereview.Directory
-	CourseDirectory   *catalog.CourseDirectory
-	LeadDirectory     *leadcapture.Directory
-	MessageDirectory  *assistant.Directory
-	CategoryDirectory *catalog.CategoryDirectory
-	BannerDirectory   *sitebanner.Directory
-	LessonDirectory   *curriculum.Directory
-	OAuth             *oauthserver.Server
+	DB                    *ent.Client
+	Settings              Settings
+	Starter               *versionbuild.Starter
+	Jobs                  *jobs.Enqueuer
+	RelatedCoursesSet     *relatedcourse.Replacer
+	Progress              *progress.Progress
+	Assets                *assetstore.Store
+	Sessions              *auth.Authenticator
+	SignIn                *signin.Gate
+	Remover               *account.Remover
+	UserEditor            *account.Editor
+	UserDirectory         *account.Directory
+	Leads                 *leadcapture.Recorder
+	Books                 *book.Recorder
+	I18n                  *localization.Translator
+	Errors                *APIErrorHandler
+	YandexFeed            *feed.Yandex
+	Assistant             *assistant.Chat
+	PostRemover           *blog.Remover
+	Permissions           *permission.Permissions
+	StaffEditor           *permission.StaffEditor
+	Dashboard             *dashboard.Dashboard
+	Sitemap               *sitemap.Sitemap
+	Search                *search.Catalogue
+	LessonReviews         *lessonreview.Scheduler
+	RelatedSuggester      *relatedcourse.Scheduler
+	LandingPageQna        *qnaitem.LandingPage
+	CategoryQna           *qnaitem.Category
+	PostEditor            *blog.Editor
+	ReviewDirectory       *coursereview.Directory
+	CourseDirectory       *catalog.CourseDirectory
+	LeadDirectory         *leadcapture.Directory
+	MessageDirectory      *assistant.Directory
+	CategoryDirectory     *catalog.CategoryDirectory
+	BannerDirectory       *sitebanner.Directory
+	LessonDirectory       *curriculum.Directory
+	LessonReviewDirectory *lessonreview.Directory
+	OAuth                 *oauthserver.Server
 }
 
 // NewServer wires the handler to its dependencies.
@@ -179,52 +182,53 @@ func NewServer(deps Deps) *Server {
 	guests := newGuestCookies(deps.Settings.GuestCookieSecret, secure)
 
 	return &Server{
-		db:                   deps.DB,
-		conv:                 &apiconv.ConverterImpl{},
-		settings:             deps.Settings,
-		starter:              deps.Starter,
-		jobs:                 deps.Jobs,
-		relatedCoursesSet:    deps.RelatedCoursesSet,
-		progress:             deps.Progress,
-		assets:               deps.Assets,
-		sessions:             deps.Sessions,
-		security:             newSecurity(deps.DB, deps.Sessions, permission.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
-		signIn:               deps.SignIn,
-		remover:              deps.Remover,
-		userEditor:           deps.UserEditor,
-		userDirectory:        deps.UserDirectory,
-		guests:               guests,
-		i18n:                 deps.I18n,
-		leads:                deps.Leads,
-		books:                deps.Books,
-		errors:               deps.Errors,
-		yandexFeed:           deps.YandexFeed,
-		catalog:              landingpage.NewCatalog(deps.DB),
-		coursePages:          coursepage.New(deps.DB, landingpage.NewCatalog(deps.DB), deps.Progress, deps.Settings.CourseRepoBaseURL),
-		assistant:            deps.Assistant,
-		postRemover:          deps.PostRemover,
-		blogPublic:           blog.NewPublic(deps.DB),
-		blogReader:           blog.NewReader(deps.DB, deps.Settings.PublicURL),
-		blogLikes:            blog.NewLiker(deps.DB),
-		permissions:          deps.Permissions,
-		staffEditor:          deps.StaffEditor,
-		dashboard:            deps.Dashboard,
-		sitemap:              deps.Sitemap,
-		searcher:             deps.Search,
-		lessonReviews:        deps.LessonReviews,
-		relatedSuggester:     deps.RelatedSuggester,
-		landingPageQna:       deps.LandingPageQna,
-		categoryQna:          deps.CategoryQna,
-		postEditor:           deps.PostEditor,
-		reviewDirectory:      deps.ReviewDirectory,
-		courseDirectory:      deps.CourseDirectory,
-		leadDirectory:        deps.LeadDirectory,
-		messageDirectory:     deps.MessageDirectory,
-		categoryDirectory:    deps.CategoryDirectory,
-		bannerDirectory:      deps.BannerDirectory,
-		lessonDirectory:      deps.LessonDirectory,
-		oauth:                deps.OAuth,
-		UnimplementedHandler: api.UnimplementedHandler{},
+		db:                    deps.DB,
+		conv:                  &apiconv.ConverterImpl{},
+		settings:              deps.Settings,
+		starter:               deps.Starter,
+		jobs:                  deps.Jobs,
+		relatedCoursesSet:     deps.RelatedCoursesSet,
+		progress:              deps.Progress,
+		assets:                deps.Assets,
+		sessions:              deps.Sessions,
+		security:              newSecurity(deps.DB, deps.Sessions, permission.NewPolicy(deps.DB), deps.I18n, deps.Errors, guests),
+		signIn:                deps.SignIn,
+		remover:               deps.Remover,
+		userEditor:            deps.UserEditor,
+		userDirectory:         deps.UserDirectory,
+		guests:                guests,
+		i18n:                  deps.I18n,
+		leads:                 deps.Leads,
+		books:                 deps.Books,
+		errors:                deps.Errors,
+		yandexFeed:            deps.YandexFeed,
+		catalog:               landingpage.NewCatalog(deps.DB),
+		coursePages:           coursepage.New(deps.DB, landingpage.NewCatalog(deps.DB), deps.Progress, deps.Settings.CourseRepoBaseURL),
+		assistant:             deps.Assistant,
+		postRemover:           deps.PostRemover,
+		blogPublic:            blog.NewPublic(deps.DB),
+		blogReader:            blog.NewReader(deps.DB, deps.Settings.PublicURL),
+		blogLikes:             blog.NewLiker(deps.DB),
+		permissions:           deps.Permissions,
+		staffEditor:           deps.StaffEditor,
+		dashboard:             deps.Dashboard,
+		sitemap:               deps.Sitemap,
+		searcher:              deps.Search,
+		lessonReviews:         deps.LessonReviews,
+		relatedSuggester:      deps.RelatedSuggester,
+		landingPageQna:        deps.LandingPageQna,
+		categoryQna:           deps.CategoryQna,
+		postEditor:            deps.PostEditor,
+		reviewDirectory:       deps.ReviewDirectory,
+		courseDirectory:       deps.CourseDirectory,
+		leadDirectory:         deps.LeadDirectory,
+		messageDirectory:      deps.MessageDirectory,
+		categoryDirectory:     deps.CategoryDirectory,
+		bannerDirectory:       deps.BannerDirectory,
+		lessonDirectory:       deps.LessonDirectory,
+		lessonReviewDirectory: deps.LessonReviewDirectory,
+		oauth:                 deps.OAuth,
+		UnimplementedHandler:  api.UnimplementedHandler{},
 	}
 }
 
